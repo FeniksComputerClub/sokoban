@@ -1,9 +1,30 @@
 #include "sys.h"
-#include "BitBoard.h"
+#include "Board.h"
+#include <iostream>
 
-using namespace cwchess;
+BitBoard const empty(0);
+BitBoard const default_walls = file_a|rank_1|rank_8;
 
-int main()
+Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_player(0, 0)
 {
-  BitBoard bb;
+}
+
+std::ostream& operator<<(std::ostream& os, Board const& board)
+{
+  for (Index i = index_begin; i < index_end; ++i)
+  {
+    if (i() > 0 && i() % 8 == 0)
+      os << '\n';
+    if (board.m_walls.test(i))
+      os << '#';
+    else if (board.m_stones.test(i))
+      os << (board.m_targets.test(i) ? '*' : '$');
+    else if (board.m_targets.test(i))
+      os << (i == board.m_player ? '+' : '.');
+    else if (i == board.m_player)
+      os << '@';
+    else
+      os << ' ';
+  }
+  return os;
 }
