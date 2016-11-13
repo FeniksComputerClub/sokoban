@@ -6,17 +6,18 @@
 int main(){
 	std::string guts = 
 		"########"
-		"#-------"
-		"#-------"
-		"#-------"
-		"#-------"
-		"#-------"
-		"#-------"
-		"########";
+		"#--@----"
+		"#**$-.--"
+		"#-#####$"
+		"#-@--$$$"
+		"#+--  --"
+		"#LOL$---"
+		".#######";
 	Board apple;
 	Board banana;
 	std::stringstream orange;
 
-	orange << apple;
+	orange << guts;
 	orange >> banana;
+	std::cout << banana << std::endl;
 }
