@@ -14,6 +14,7 @@ class Board {
 
   public:
     Board();
+    Board(std::string const&);
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);
