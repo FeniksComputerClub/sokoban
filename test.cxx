@@ -4,20 +4,20 @@
 #include <sstream>
 
 int main(){
-	std::string guts = 
+	std::string setup = 
 		"########"
-		"#--@----"
+		"#--@-++-"
 		"#**$-.--"
 		"#-#####$"
 		"#-@--$$$"
 		"#+--  --"
 		"#LOL$---"
 		".#######";
-	Board apple;
-	Board banana;
-	std::stringstream orange;
+	Board alpha;
+	Board beta;
+	std::stringstream setupstream;
 
-	orange << guts;
-	orange >> banana;
-	std::cout << banana << std::endl;
+	setupstream << setup;
+	setupstream >> beta;
+	std::cout << beta << std::endl;
 }
