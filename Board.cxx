@@ -1,6 +1,7 @@
 #include "sys.h"
 #include "Board.h"
 #include <iostream>
+#include <iomanip>
 
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
@@ -27,4 +28,23 @@ std::ostream& operator<<(std::ostream& os, Board const& board)
       os << ' ';
   }
   return os;
+}
+
+std::istream& operator>>(std::istream const& is, Board& board)
+{
+  char readchar;
+  board = Board();
+  for (Index i = index_begin; i < index_end; ++i)
+  {
+    is >> std::noskipws >> readchar;
+    if (readchar == '#')
+      board.m_walls.set(i);
+    else if (readchar == '*' || readchar == '$')
+      board.m_stones.set(i);
+    else if (readchar == '@' || readchar == '.')
+      board.m_player = i;
+    if (readchar == '*' || readchar == '+' || readchar == '.')
+      board.m_targets.set(i);
+  }
+  return is;
 }
