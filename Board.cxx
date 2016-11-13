@@ -30,7 +30,7 @@ std::ostream& operator<<(std::ostream& os, Board const& board)
   return os;
 }
 
-std::istream& operator>>(std::istream const& is, Board& board)
+std::istream& operator>>(std::istream& is, Board& board)
 {
   char readchar;
   board = Board();
