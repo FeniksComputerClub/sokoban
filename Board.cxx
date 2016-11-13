@@ -39,11 +39,11 @@ std::istream& operator>>(std::istream& is, Board& board)
     is >> std::noskipws >> readchar;
     if (readchar == '#')
       board.m_walls.set(i);
-    else if (readchar == '*' || readchar == '$')
+    else if (readchar == '$' || readchar == '*')
       board.m_stones.set(i);
-    else if (readchar == '@' || readchar == '.')
+    else if (readchar == '@' || readchar == '+')
       board.m_player = i;
-    if (readchar == '*' || readchar == '+' || readchar == '.')
+    if (readchar == '.' || readchar == '*' || readchar == '+')
       board.m_targets.set(i);
   }
   return is;
