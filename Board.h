@@ -3,6 +3,8 @@
 #include "BitBoard.h"
 #include <iosfwd>
 
+typedef std::string BoardString;
+
 using namespace cwchess;
 
 class Board {
@@ -15,6 +17,7 @@ class Board {
   public:
     Board();
     Board(std::string const&);
+    void read(BoardString const&);
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);

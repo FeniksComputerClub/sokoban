@@ -2,6 +2,8 @@
 #include "Board.h"
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <stdexcept>
 
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
@@ -10,48 +12,65 @@ Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_pl
 {
 }
 
-Board::Board(std::string const& inputstring)
+Board::Board(BoardString const& inputstring)
 {
-	std::stringstream stream;
-	stream << inputstring;
-	stream >> *this;
+  read(inputstring);
 }
 
-std::ostream& operator<<(std::ostream& os, Board const& board)
+void Board::read(BoardString const& inputstring)
+{
+  std::stringstream inputstream;
+  char readchar;
+
+  inputstream << inputstring;
+  for (Index i = index_begin; i < index_end; ++i)
+  {
+    inputstream >> std::noskipws >> readchar;
+    if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
+      continue;
+    if (readchar == '#')
+      m_walls.set(i);
+    else if (readchar == '$' || readchar == '*')
+      m_stones.set(i);
+    else if (readchar == '@' || readchar == '+')
+      m_player = i;
+    if (readchar == '.' || readchar == '*' || readchar == '+')
+      m_targets.set(i);
+  }
+}
+
+std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i() > 0 && i() % 8 == 0)
-      os << '\n';
+      outputstream << '\n';
     if (board.m_walls.test(i))
-      os << '#';
+      outputstream << '#';
     else if (board.m_stones.test(i))
-      os << (board.m_targets.test(i) ? '*' : '$');
+      outputstream << (board.m_targets.test(i) ? '*' : '$');
     else if (board.m_targets.test(i))
-      os << (i == board.m_player ? '+' : '.');
+      outputstream << (i == board.m_player ? '+' : '.');
     else if (i == board.m_player)
-      os << '@';
+      outputstream << '@';
     else
-      os << ' ';
+      outputstream << ' ';
   }
-  return os;
+  return outputstream;
 }
 
-std::istream& operator>>(std::istream& is, Board& board)
+std::istream& operator>>(std::istream& inputstream, Board& board)
 {
+  BoardString inputstring;
   char readchar;
-  board = Board();
   for (Index i = index_begin; i < index_end; ++i)
   {
-    is >> std::noskipws >> readchar;
-    if (readchar == '#')
-      board.m_walls.set(i);
-    else if (readchar == '$' || readchar == '*')
-      board.m_stones.set(i);
-    else if (readchar == '@' || readchar == '+')
-      board.m_player = i;
-    if (readchar == '.' || readchar == '*' || readchar == '+')
-      board.m_targets.set(i);
+    readchar = inputstream.get();
+    if(readchar)
+      inputstring = inputstring + readchar;
+    else
+      throw std::runtime_error("input too short");
   }
-  return is;
+  board.read(inputstring);
+  return inputstream;
 }
