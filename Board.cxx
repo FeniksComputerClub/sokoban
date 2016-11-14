@@ -2,6 +2,8 @@
 #include "Board.h"
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <stdexcept>
 
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
@@ -12,9 +14,35 @@ Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_pl
 
 Board::Board(std::string const& inputstring)
 {
-	std::stringstream stream;
-	stream << inputstring;
-	stream >> *this;
+  read(inputstring);
+}
+
+void Board::reset()
+{
+  m_walls.reset();
+  m_stones.reset();
+  m_targets.reset();
+  m_player = cwchess::ia1;
+}
+
+void Board::read(BoardString const& string)
+{
+  reset();
+  size_t len = string.length();
+  if (len != 64)
+    throw std::runtime_error("String too short");
+  for(Index i = index_begin; i < index_end; ++i)
+  {
+    char readchar = string[i()];
+    if (readchar == '#')
+      m_walls.set(i);
+    else if (readchar == '$' || readchar == '*')
+      m_stones.set(i);
+    else if (readchar == '@' || readchar == '+')
+      m_player = i;
+    if (readchar == '.' || readchar == '*' || readchar == '+')
+      m_targets.set(i);
+  }
 }
 
 std::ostream& operator<<(std::ostream& os, Board const& board)
@@ -39,19 +67,5 @@ std::ostream& operator<<(std::ostream& os, Board const& board)
 
 std::istream& operator>>(std::istream& is, Board& board)
 {
-  char readchar;
-  board = Board();
-  for (Index i = index_begin; i < index_end; ++i)
-  {
-    is >> std::noskipws >> readchar;
-    if (readchar == '#')
-      board.m_walls.set(i);
-    else if (readchar == '$' || readchar == '*')
-      board.m_stones.set(i);
-    else if (readchar == '@' || readchar == '+')
-      board.m_player = i;
-    if (readchar == '.' || readchar == '*' || readchar == '+')
-      board.m_targets.set(i);
-  }
   return is;
 }
