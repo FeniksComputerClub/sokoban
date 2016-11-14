@@ -5,7 +5,7 @@
 
 int main(){
 	std::string setup = 
-		"########"
+		".#######"
 		"#--@-++-"
 		"#**$-.--"
 		"#-#####$"
@@ -17,6 +17,8 @@ int main(){
 	Board beta;
 	std::stringstream setupstream;
 
+	alpha = Board(setup);
+	std::cout << alpha << std::endl;
 	setupstream << setup;
 	setupstream >> beta;
 	std::cout << beta << std::endl;

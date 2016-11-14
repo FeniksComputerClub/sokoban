@@ -6,6 +6,8 @@
 
 typedef std::string BoardString;
 
+typedef std::string BoardString;
+
 using namespace cwchess;
 
 class Board {

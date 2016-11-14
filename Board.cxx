@@ -12,7 +12,7 @@ Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_pl
 {
 }
 
-Board::Board(std::string const& inputstring)
+Board::Board(BoardString const& inputstring)
 {
   read(inputstring);
 }
@@ -34,6 +34,8 @@ void Board::read(BoardString const& string)
   for(Index i = index_begin; i < index_end; ++i)
   {
     char readchar = string[i()];
+    if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
+      continue;
     if (readchar == '#')
       m_walls.set(i);
     else if (readchar == '$' || readchar == '*')
@@ -45,27 +47,38 @@ void Board::read(BoardString const& string)
   }
 }
 
-std::ostream& operator<<(std::ostream& os, Board const& board)
+std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i() > 0 && i() % 8 == 0)
-      os << '\n';
+      outputstream << '\n';
     if (board.m_walls.test(i))
-      os << '#';
+      outputstream << '#';
     else if (board.m_stones.test(i))
-      os << (board.m_targets.test(i) ? '*' : '$');
+      outputstream << (board.m_targets.test(i) ? '*' : '$');
     else if (board.m_targets.test(i))
-      os << (i == board.m_player ? '+' : '.');
+      outputstream << (i == board.m_player ? '+' : '.');
     else if (i == board.m_player)
-      os << '@';
+      outputstream << '@';
     else
-      os << ' ';
+      outputstream << ' ';
   }
-  return os;
+  return outputstream;
 }
 
-std::istream& operator>>(std::istream& is, Board& board)
+std::istream& operator>>(std::istream& inputstream, Board& board)
 {
-  return is;
+  BoardString inputstring;
+  char readchar;
+  for (Index i = index_begin; i < index_end; ++i)
+  {
+    readchar = inputstream.get();
+    if(readchar)
+      inputstring = inputstring + readchar;
+    else
+      throw std::runtime_error("input too short");
+  }
+  board.read(inputstring);
+  return inputstream;
 }
