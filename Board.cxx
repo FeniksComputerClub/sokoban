@@ -19,9 +19,9 @@ Board::Board(BoardString const& inputstring)
 
 void Board::reset()
 {
-  m_walls.reset();
-  m_stones.reset();
-  m_targets.reset();
+  m_walls = default_walls;
+  m_stones = empty;
+  m_targets = empty;
   m_player = cwchess::ia1;
 }
 
