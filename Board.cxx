@@ -10,6 +10,13 @@ Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_pl
 {
 }
 
+Board::Board(std::string const& inputstring)
+{
+	std::stringstream stream;
+	stream << inputstring;
+	stream >> *this;
+}
+
 std::ostream& operator<<(std::ostream& os, Board const& board)
 {
   for (Index i = index_begin; i < index_end; ++i)
