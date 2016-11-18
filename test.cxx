@@ -6,6 +6,15 @@
 int main(){
 	std::string setup = 
 		".#######"
+		"#--@-  -"
+		"#**$-.--"
+		"#-#####$"
+		"#- --$$$"
+		"# --  .."
+		"#LOL$..."
+		".#######";
+	std::string setupb = 
+		".#######"
 		"#--@-++-"
 		"#**$-.--"
 		"#-#####$"
@@ -19,7 +28,7 @@ int main(){
 
 	alpha = Board(setup);
 	std::cout << alpha << std::endl;
-	setupstream << setup;
+	setupstream << setupb;
 	setupstream >> beta;
 	std::cout << beta << std::endl;
 }

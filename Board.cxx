@@ -8,8 +8,9 @@
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
 
-Board::Board() : m_walls(default_walls), m_stones(empty), m_targets(empty), m_player(0, 0)
+Board::Board()
 {
+  reset();
 }
 
 Board::Board(BoardString const& inputstring)
@@ -25,60 +26,87 @@ void Board::reset()
   m_player = cwchess::ia1;
 }
 
-void Board::read(BoardString const& string)
+void Board::write(std::ostream& outputstream) const
 {
+  for (Index i = index_begin; i < index_end; ++i)
+  {
+    if (i() > 0 && i() % 8 == 0)
+      outputstream << '\n';
+    if (m_walls.test(i))
+      outputstream << '#';
+    else if (m_stones.test(i))
+      outputstream << (m_targets.test(i) ? '*' : '$');
+    else if (m_targets.test(i))
+      outputstream << (i == m_player ? '+' : '.');
+    else if (i == m_player)
+      outputstream << '@';
+    else
+      outputstream << ' ';
+  }
+}
+
+void Board::read(BoardString const& inputstring)
+{
+  size_t len = inputstring.length();
+  char readchar;
+  bool manyplayers = false;
+  
   reset();
-  size_t len = string.length();
-  if (len != 64)
-    throw std::runtime_error("String too short");
+  if (len - 1 != 64)
+    throw std::runtime_error("input too short");
+
   for(Index i = index_begin; i < index_end; ++i)
   {
-    char readchar = string[i()];
+    readchar = inputstring[i()];
     if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
       continue;
     if (readchar == '#')
       m_walls.set(i);
     else if (readchar == '$' || readchar == '*')
       m_stones.set(i);
-    else if (readchar == '@' || readchar == '+')
-      m_player = i;
+    else if (readchar == '@' || readchar == '+') {
+      if (m_player == cwchess::ia1)  //m_player will never be set to 0 here because i < 8 is ignored.
+        m_player = i;
+      else
+        manyplayers = true;
+    }
     if (readchar == '.' || readchar == '*' || readchar == '+')
       m_targets.set(i);
   }
+
+  if (manyplayers || !sane()) {
+    throw std::runtime_error("invalid input");
+  }
+}
+
+bool Board::sane()
+{
+  if ((m_stones & m_stones) != (m_targets & m_targets))
+    return false;
+  if ((m_walls & default_walls) == default_walls)
+    return false;
+  if ((m_stones & m_walls) == 0)
+    return false;
+  if ((m_targets & m_walls) == 0)
+    return false;
+  if ((BitBoard(m_player) & m_walls) == 0)
+    return false;
+  return true;
 }
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {
-  for (Index i = index_begin; i < index_end; ++i)
-  {
-    if (i() > 0 && i() % 8 == 0)
-      outputstream << '\n';
-    if (board.m_walls.test(i))
-      outputstream << '#';
-    else if (board.m_stones.test(i))
-      outputstream << (board.m_targets.test(i) ? '*' : '$');
-    else if (board.m_targets.test(i))
-      outputstream << (i == board.m_player ? '+' : '.');
-    else if (i == board.m_player)
-      outputstream << '@';
-    else
-      outputstream << ' ';
-  }
+  board.write(outputstream);
   return outputstream;
 }
 
 std::istream& operator>>(std::istream& inputstream, Board& board)
 {
   BoardString inputstring;
-  char readchar;
-  for (Index i = index_begin; i < index_end; ++i)
-  {
-    readchar = inputstream.get();
-    if(readchar)
-      inputstring = inputstring + readchar;
-    else
-      throw std::runtime_error("input too short");
-  }
+  char getchars[64];
+  inputstream.get(getchars, 64);
+
+  inputstring.assign(getchars);
   board.read(inputstring);
   return inputstream;
 }

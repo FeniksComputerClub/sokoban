@@ -22,7 +22,9 @@ class Board {
     Board(std::string const&);
 
     void reset();
+    void write(std::ostream&) const;
     void read(BoardString const&);
+    bool sane();
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);
