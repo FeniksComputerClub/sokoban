@@ -1,0 +1,5 @@
+*.o
+*.d
+env.source
+tags
+test
