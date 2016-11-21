@@ -37,4 +37,4 @@ int main(){
 	catch(std::runtime_error const& error) {
 		std::cout << "error: " << error.what() << std::endl;
 	}
-
+}
