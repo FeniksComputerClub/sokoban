@@ -75,22 +75,24 @@ void Board::read(BoardString const& inputstring)
       m_targets.set(i);
   }
 
-  if (manyplayers || sane()) {
+  if (manyplayers || !sane()) {
     throw std::runtime_error("invalid input");
   }
 }
 
 bool Board::sane()
 {
-  if ((m_stones & m_stones) != (m_targets & m_targets))
+  if ((__builtin_popcount(m_stones()) != (__builtin_popcount(m_targets()))))
     return false;
-  if ((m_walls & default_walls) == default_walls)
+  if ((m_walls & default_walls) != default_walls)
     return false;
-  if ((m_stones & m_walls) == 0)
+  if ((m_stones & m_walls) != 0)
     return false;
-  if ((m_targets & m_walls) == 0)
+  if ((m_targets & m_walls) != 0)
     return false;
-  if ((BitBoard(m_player) & m_walls) == 0)
+  if (m_player == s_noplayer)
+    return false;
+  if ((BitBoard(m_player) & m_walls) != 0)
     return false;
   return true;
 }
