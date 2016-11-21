@@ -50,16 +50,15 @@ void Board::write(std::ostream& outputstream) const
 void Board::read(BoardString const& inputstring)
 {
   size_t len = inputstring.length();
-  char readchar;
   bool manyplayers = false;
-  
+
   reset();
   if (len - 1 != 64)
     throw std::runtime_error("input too short");
 
   for(Index i = index_begin; i < index_end; ++i)
   {
-    readchar = inputstring[i()];
+    char readchar = inputstring[i()];
     if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
       continue;
     if (readchar == '#')
