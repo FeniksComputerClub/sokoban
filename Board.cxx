@@ -14,8 +14,7 @@ namespace {
 
 int popcount(uint64_t mask)
 {
-  // TODO: Tibbe 
-  return count;
+  return __builtin_popcountll(mask);
 }
 
 } // namespace
@@ -38,12 +37,15 @@ void Board::reset()
   m_player = s_noplayer;
 }
 
-void Board::write(std::ostream& outputstream) const
+void Board::write(std::ostream& outputstream, BitBoard const& colors) const
 {
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i() > 0 && i() % 8 == 0)
       outputstream << '\n';
+
+    if (colors.test(i))
+      outputstream << "\e[45m";
     if (m_walls.test(i))
       outputstream << '#';
     else if (m_stones.test(i))
@@ -54,6 +56,8 @@ void Board::write(std::ostream& outputstream) const
       outputstream << '@';
     else
       outputstream << ' ';
+    if (colors.test(i))
+      outputstream << "\e[0m";
   }
 }
 
