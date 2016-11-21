@@ -10,6 +10,16 @@ BitBoard const default_walls = file_a|rank_1|rank_8;
 
 Index const Board::s_noplayer(index_end);
 
+namespace {
+
+int popcount(uint64_t mask)
+{
+  // TODO: Tibbe 
+  return count;
+}
+
+} // namespace
+
 Board::Board()
 {
   reset();
@@ -82,18 +92,36 @@ void Board::read(BoardString const& inputstring)
 
 bool Board::sane()
 {
-  if ((__builtin_popcount(m_stones()) != (__builtin_popcount(m_targets()))))
+  if (popcount(m_stones()) != popcount(m_targets()))
+  {
+    std::cout << "Number of targets nor equal to number of stones" << std::endl;
     return false;
+  }
   if ((m_walls & default_walls) != default_walls)
+  {
+    std::cout << "Default walls missing" << std::endl;
     return false;
+  }
   if ((m_stones & m_walls) != 0)
+  {
+    std::cout << "A stone on a wall" << std::endl;
     return false;
+  }
   if ((m_targets & m_walls) != 0)
+  {
+    std::cout << "Target on a wall" << std::endl;
     return false;
+  }
   if (m_player == s_noplayer)
+  {
+    std::cout << "No player defined!" << std::endl;
     return false;
+  }
   if ((BitBoard(m_player) & m_walls) != 0)
+  {
+    std::cout << "Player on the wall" << std::endl;
     return false;
+  }
   return true;
 }
 
