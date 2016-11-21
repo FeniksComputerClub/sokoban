@@ -16,6 +16,7 @@ class Board {
     BitBoard m_stones;
     BitBoard m_targets;
     Index m_player;
+    static Index const s_noplayer;
 
   public:
     Board();

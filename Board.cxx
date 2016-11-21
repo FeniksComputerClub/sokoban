@@ -8,6 +8,8 @@
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
 
+Index const Board::s_noplayer(index_end);
+
 Board::Board()
 {
   reset();
@@ -23,7 +25,7 @@ void Board::reset()
   m_walls = default_walls;
   m_stones = empty;
   m_targets = empty;
-  m_player = cwchess::ia1;
+  m_player = s_noplayer;
 }
 
 void Board::write(std::ostream& outputstream) const
@@ -65,7 +67,7 @@ void Board::read(BoardString const& inputstring)
     else if (readchar == '$' || readchar == '*')
       m_stones.set(i);
     else if (readchar == '@' || readchar == '+') {
-      if (m_player == cwchess::ia1)  //m_player will never be set to 0 here because i < 8 is ignored.
+      if (m_player == s_noplayer)
         m_player = i;
       else
         manyplayers = true;
