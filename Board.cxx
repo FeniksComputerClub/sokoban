@@ -10,15 +10,6 @@ BitBoard const default_walls = file_a|rank_1|rank_8;
 
 Index const Board::s_noplayer(index_end);
 
-namespace {
-
-int popcount(uint64_t mask)
-{
-  return __builtin_popcountll(mask);
-}
-
-} // namespace
-
 Board::Board()
 {
   reset();
@@ -96,7 +87,7 @@ void Board::read(BoardString const& inputstring)
 
 bool Board::sane()
 {
-  if (popcount(m_stones()) != popcount(m_targets()))
+  if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
   {
     std::cout << "Number of targets nor equal to number of stones" << std::endl;
     return false;
