@@ -53,7 +53,7 @@ void Board::read(BoardString const& inputstring)
   bool manyplayers = false;
 
   reset();
-  if (len - 1 != 64)
+  if (len != 64)
     throw std::runtime_error("input too short");
 
   for(Index i = index_begin; i < index_end; ++i)
@@ -75,7 +75,7 @@ void Board::read(BoardString const& inputstring)
       m_targets.set(i);
   }
 
-  if (manyplayers || !sane()) {
+  if (manyplayers || sane()) {
     throw std::runtime_error("invalid input");
   }
 }
@@ -104,8 +104,8 @@ std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 std::istream& operator>>(std::istream& inputstream, Board& board)
 {
   BoardString inputstring;
-  char getchars[64];
-  inputstream.get(getchars, 64);
+  char getchars[65];
+  inputstream.get(getchars, 65);
 
   inputstring.assign(getchars);
   board.read(inputstring);

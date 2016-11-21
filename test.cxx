@@ -2,6 +2,7 @@
 #include "Board.h"
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 int main(){
 	std::string setup = 
@@ -26,9 +27,14 @@ int main(){
 	Board beta;
 	std::stringstream setupstream;
 
-	alpha = Board(setup);
-	std::cout << alpha << std::endl;
-	setupstream << setupb;
-	setupstream >> beta;
-	std::cout << beta << std::endl;
+	try {
+		alpha = Board(setup);
+		std::cout << alpha << std::endl;
+		setupstream << setup;
+		setupstream >> beta;
+		std::cout << beta << std::endl;
+	}
+	catch(std::runtime_error const& error) {
+		std::cout << error.what() << std::endl;
+	}
 }
