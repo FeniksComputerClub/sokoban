@@ -53,7 +53,7 @@ void Board::read(BoardString const& inputstring)
   bool manyplayers = false;
 
   reset();
-  if (len - 1 != 64)
+  if (len != 64)
     throw std::runtime_error("input too short");
 
   for(Index i = index_begin; i < index_end; ++i)
@@ -82,15 +82,17 @@ void Board::read(BoardString const& inputstring)
 
 bool Board::sane()
 {
-  if ((m_stones & m_stones) != (m_targets & m_targets))
+  if ((__builtin_popcount(m_stones()) != (__builtin_popcount(m_targets()))))
     return false;
-  if ((m_walls & default_walls) == default_walls)
+  if ((m_walls & default_walls) != default_walls)
     return false;
-  if ((m_stones & m_walls) == 0)
+  if ((m_stones & m_walls) != 0)
     return false;
-  if ((m_targets & m_walls) == 0)
+  if ((m_targets & m_walls) != 0)
     return false;
-  if ((BitBoard(m_player) & m_walls) == 0)
+  if (m_player == s_noplayer)
+    return false;
+  if ((BitBoard(m_player) & m_walls) != 0)
     return false;
   return true;
 }

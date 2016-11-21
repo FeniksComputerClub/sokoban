@@ -28,7 +28,7 @@ int main(){
 
 	alpha = Board(setup);
 	std::cout << alpha << std::endl;
-	setupstream << setupb;
+	setupstream << setup;
 	setupstream >> beta;
 	std::cout << beta << std::endl;
 }
