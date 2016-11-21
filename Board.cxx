@@ -106,8 +106,8 @@ std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 std::istream& operator>>(std::istream& inputstream, Board& board)
 {
   BoardString inputstring;
-  char getchars[64];
-  inputstream.get(getchars, 64);
+  char getchars[65];
+  inputstream.get(getchars, 65);
 
   inputstring.assign(getchars);
   board.read(inputstring);
