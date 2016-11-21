@@ -14,8 +14,14 @@ namespace {
 
 int popcount(uint64_t mask)
 {
-  // TODO: Tibbe 
-  return count;
+	mask = (mask & 0x5555555555555555LU) + (mask >> 1 & 0x5555555555555555LU);	
+	mask = (mask & 0x3333333333333333LU) + (mask >> 2 & 0x3333333333333333LU);
+	mask = mask + (mask >> 4) & 0x0F0F0F0F0F0F0F0FLU;
+	mask = mask + (mask >> 8);
+	mask = mask + (mask >> 16);
+	mask = mask + (mask >> 32) & 0x7FLU;
+
+	return (int) mask;
 }
 
 } // namespace
