@@ -26,13 +26,14 @@ int main(){
 	Board alpha;
 	Board beta;
 	std::stringstream setupstream;
-	BitBoard colors(0xffffffff00000ULL);
+	BitBoard colors;
 
 	try {
 		alpha = Board(setup);
 		std::cout << alpha << std::endl;
 		setupstream << setup;
 		setupstream >> beta;
+		beta.reachable(colors);
 		beta.write(std::cout, colors);
 		std::cout << std::endl;
 	}
