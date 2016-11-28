@@ -53,9 +53,23 @@ void Board::write(std::ostream& outputstream, BitBoard const& colors) const
   }
 }
 
-void Board::reachable(BitBoard& outputboard) const
+BitBoard Board::reachable() const
 {
-  outputboard = ~(m_walls | m_stones);
+  BitBoard const not_wall_or_stone = ~(m_walls | m_stones);
+  BitBoard player(m_player);
+  mask_t output = player();
+  mask_t previous;
+  do
+  {
+    previous = output;
+    output |= previous >> 8;
+    output |= previous >> 1;
+    output |= previous << 1;
+    output |= previous << 8;
+    output &= not_wall_or_stone();
+  }
+  while(output != previous);
+  return BitBoard(output);
 }
 
 void Board::read(BoardString const& inputstring)

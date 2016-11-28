@@ -25,11 +25,11 @@ int main(){
 		".#######";
 	std::string setupc = 
 		"########"
-		"#@------"
+		"#-------"
 		"#######-"
-		"#---$##-"
-		"#-#-#.#-"
-		"#-#####-"
+		"#---$##@"
+		"#---#.#-"
+		"#-#-###-"
 		"#-------"
 		"########";
 	Board alpha;
@@ -38,11 +38,11 @@ int main(){
 	BitBoard colors;
 
 	try {
-		alpha = Board(setup);
+		alpha = Board(setupc);
 		std::cout << alpha << std::endl;
-		setupstream << setup;
+		setupstream << setupc;
 		setupstream >> beta;
-		beta.reachable(colors);
+		colors = beta.reachable();
 		beta.write(std::cout, colors);
 		std::cout << std::endl;
 	}

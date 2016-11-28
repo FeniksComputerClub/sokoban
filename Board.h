@@ -24,7 +24,7 @@ class Board {
 
     void reset();
     void write(std::ostream&, BitBoard const& colors = BitBoard(0)) const;
-    void reachable(BitBoard& outputboard) const;
+    BitBoard reachable() const;
     void read(BoardString const&);
     bool sane();
 
