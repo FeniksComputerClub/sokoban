@@ -35,7 +35,8 @@ void Board::write(std::ostream& outputstream, BitBoard const& colors) const
     if (i() > 0 && i() % 8 == 0)
       outputstream << '\n';
 
-    if (colors.test(i))
+    bool iscolorset = colors.test(i);
+    if (iscolorset)
       outputstream << "\e[45m";
     if (m_walls.test(i))
       outputstream << '#';
@@ -47,9 +48,14 @@ void Board::write(std::ostream& outputstream, BitBoard const& colors) const
       outputstream << '@';
     else
       outputstream << ' ';
-    if (colors.test(i))
+    if (iscolorset)
       outputstream << "\e[0m";
   }
+}
+
+void Board::reachable(BitBoard& outputboard) const
+{
+  outputboard = ~(m_walls | m_stones);
 }
 
 void Board::read(BoardString const& inputstring)
@@ -63,9 +69,9 @@ void Board::read(BoardString const& inputstring)
 
   for(Index i = index_begin; i < index_end; ++i)
   {
-    char readchar = inputstring[i()];
     if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
       continue;
+    char readchar = inputstring[i()];
     if (readchar == '#')
       m_walls.set(i);
     else if (readchar == '$' || readchar == '*')
@@ -80,44 +86,27 @@ void Board::read(BoardString const& inputstring)
       m_targets.set(i);
   }
 
-  if (manyplayers || !sane()) {
-    throw std::runtime_error("invalid input");
+  if (!sane() ||  manyplayers) {
+    throw std::runtime_error(/*(manyplayers ? "There are multiple players in input!\n" : "") .*/ "invalid input");
   }
 }
 
 bool Board::sane()
 {
+  std::string errorstring;
   if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
-  {
-    std::cout << "Number of targets nor equal to number of stones" << std::endl;
-    return false;
-  }
+    errorstring.append("The amount of stones is not equal to the amount of goals!\n");
   if ((m_walls & default_walls) != default_walls)
-  {
-    std::cout << "Default walls missing" << std::endl;
-    return false;
-  }
-  if ((m_stones & m_walls) != 0)
-  {
-    std::cout << "A stone on a wall" << std::endl;
-    return false;
-  }
-  if ((m_targets & m_walls) != 0)
-  {
-    std::cout << "Target on a wall" << std::endl;
-    return false;
-  }
+    errorstring.append("Surrounding walls are missing! (should never occur)\n");
+  if (((m_stones & m_walls) != 0) && ((m_targets & m_walls) != 0) && ((BitBoard(m_player) & m_walls) != 0))
+    errorstring.append("Another object is inside a wall! (should never occur)\n");
   if (m_player == s_noplayer)
-  {
-    std::cout << "No player defined!" << std::endl;
-    return false;
-  }
-  if ((BitBoard(m_player) & m_walls) != 0)
-  {
-    std::cout << "Player on the wall" << std::endl;
-    return false;
-  }
-  return true;
+    errorstring.append("No player defined!\n");
+
+  if(errorstring == "")
+    return true;
+  std::cout << "error: " << errorstring;
+  return false;
 }
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
