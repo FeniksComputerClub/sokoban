@@ -23,6 +23,15 @@ int main(){
 		"#+--  --"
 		"#LOL$---"
 		".#######";
+	std::string setupc = 
+		"########"
+		"#@------"
+		"#######-"
+		"#---$##-"
+		"#-#-#.#-"
+		"#-#####-"
+		"#-------"
+		"########";
 	Board alpha;
 	Board beta;
 	std::stringstream setupstream;

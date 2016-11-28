@@ -55,13 +55,7 @@ void Board::write(std::ostream& outputstream, BitBoard const& colors) const
 
 void Board::reachable(BitBoard& outputboard) const
 {
-  outputboard.set();
-  for(Index i = index_begin; i < index_end; ++i)
-    if(m_walls.test(i))
-      outputboard.reset(i);
-  for(Index i = index_begin; i < index_end; ++i)
-    if(m_stones.test(i))
-      outputboard.reset(i);
+  outputboard = ~(m_walls | m_stones);
 }
 
 void Board::read(BoardString const& inputstring)
@@ -103,7 +97,7 @@ bool Board::sane()
   if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
     errorstring.append("The amount of stones is not equal to the amount of goals!\n");
   if ((m_walls & default_walls) != default_walls)
-    errorstring.append("Surrounding walls missing! (should never occur)\n");
+    errorstring.append("Surrounding walls are missing! (should never occur)\n");
   if (((m_stones & m_walls) != 0) && ((m_targets & m_walls) != 0) && ((BitBoard(m_player) & m_walls) != 0))
     errorstring.append("Another object is inside a wall! (should never occur)\n");
   if (m_player == s_noplayer)
