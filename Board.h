@@ -6,11 +6,11 @@
 
 typedef std::string BoardString;
 
-typedef std::string BoardString;
-
 using namespace cwchess;
 
 class Board {
+    typedef cwchess::mask_t mask_t;
+
   private:
     BitBoard m_walls;
     BitBoard m_stones;
