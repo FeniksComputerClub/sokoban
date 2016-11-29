@@ -23,7 +23,7 @@ class Board {
     Board(std::string const&);
 
     void reset();
-    void write(std::ostream&, BitBoard const& colors = BitBoard(0)) const;
+    std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard reachable() const;
     void read(BoardString const&);
     bool sane();

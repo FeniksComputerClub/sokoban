@@ -28,29 +28,31 @@ void Board::reset()
   m_player = s_noplayer;
 }
 
-void Board::write(std::ostream& outputstream, BitBoard const& colors) const
+std::string Board::write(BitBoard const& colors) const
 {
+  std::string outputstring;
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i() > 0 && i() % 8 == 0)
-      outputstream << '\n';
+      outputstring += '\n';
 
     bool iscolorset = colors.test(i);
     if (iscolorset)
-      outputstream << "\e[45m";
+      outputstring += "\e[45m";
     if (m_walls.test(i))
-      outputstream << '#';
+      outputstring += '#';
     else if (m_stones.test(i))
-      outputstream << (m_targets.test(i) ? '*' : '$');
+      outputstring += (m_targets.test(i) ? '*' : '$');
     else if (m_targets.test(i))
-      outputstream << (i == m_player ? '+' : '.');
+      outputstring += (i == m_player ? '+' : '.');
     else if (i == m_player)
-      outputstream << '@';
+      outputstring += '@';
     else
-      outputstream << ' ';
+      outputstring += ' ';
     if (iscolorset)
-      outputstream << "\e[0m";
+      outputstring += "\e[0m";
   }
+  return outputstring;
 }
 
 BitBoard Board::reachable() const
@@ -127,7 +129,7 @@ bool Board::sane()
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {
-  board.write(outputstream);
+  outputstream << board.write();
   return outputstream;
 }
 

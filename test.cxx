@@ -40,13 +40,11 @@ int main(){
 	try {
 		alpha = Board(setup_a);
 		colors = alpha.reachable();
-		alpha.write(std::cout, colors);
-		std::cout << std::endl;
+		std::cout << alpha << std::endl;
 
-		beta = Board(setup_b);
+		beta = Board(setup_a);
 		colors = beta.reachable();
-		beta.write(std::cout, colors);
-		std::cout << std::endl;
+		std::cout << beta.write(colors) << std::endl;
 	}
 	catch(std::runtime_error const& error) {
 		std::cout << "error: " << error.what() << std::endl;
