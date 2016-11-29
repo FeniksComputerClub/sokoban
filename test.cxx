@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 int main(){
-	std::string setup = 
+	std::string setup_a = 
 		"########"
 		"#--@-  -"
 		"#**$-.--"
@@ -14,7 +14,7 @@ int main(){
 		"# --  .."
 		"#LOL$..."
 		"########";
-	std::string setupb = 
+	std::string setup_b = 
 		".#######"
 		"#--@-++-"
 		"#**$-.--"
@@ -23,7 +23,7 @@ int main(){
 		"#+--  --"
 		"#LOL$---"
 		".#######";
-	std::string setupc = 
+	std::string setup_c = 
 		"########"
 		"#-------"
 		"#######-"
@@ -38,10 +38,12 @@ int main(){
 	BitBoard colors;
 
 	try {
-		alpha = Board(setupc);
-		std::cout << alpha << std::endl;
-		setupstream << setupc;
-		setupstream >> beta;
+		alpha = Board(setup_a);
+		colors = alpha.reachable();
+		alpha.write(std::cout, colors);
+		std::cout << std::endl;
+
+		beta = Board(setup_b);
 		colors = beta.reachable();
 		beta.write(std::cout, colors);
 		std::cout << std::endl;

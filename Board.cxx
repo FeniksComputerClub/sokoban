@@ -101,7 +101,9 @@ void Board::read(BoardString const& inputstring)
   }
 
   if (!sane() ||  manyplayers) {
-    throw std::runtime_error(/*(manyplayers ? "There are multiple players in input!\n" : "") .*/ "invalid input");
+    if(manyplayers)
+      std::cout << "error: There are multiple players in input!" << std::endl;
+    throw std::runtime_error("invalid input");
   }
 }
 
