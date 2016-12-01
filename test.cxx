@@ -35,7 +35,7 @@ int main(){
 	std::string setup_d = 
 		"########"
 		"#@----$-"
-		"###$----"
+		"###$#---"
 		"#---$--$"
 		"#--#$---"
 		"#---$###"
@@ -46,6 +46,7 @@ int main(){
 		Board beta(setup_d);
 		std::cout << "\nReachable:\n" << beta.write(beta.reachable()) << std::endl;
 		std::cout << "\nPushable:\n" << beta.write(beta.pushable()) << std::endl;
+		std::cout << "\nTargetable:\n" << beta.write(beta.targetable()) << std::endl;
 	}
 	catch(std::runtime_error const& error) {
 		std::cout << "error: " << error.what() << std::endl;

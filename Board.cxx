@@ -57,7 +57,7 @@ std::string Board::write(BitBoard const& colors) const
 
 BitBoard Board::reachable() const
 {
-  BitBoard const not_wall_or_stone = ~(m_walls | m_stones);
+  BitBoard const not_obstructed = ~(m_walls | m_stones);
   BitBoard player(m_player);
   mask_t output = player();
   mask_t previous;
@@ -68,7 +68,7 @@ BitBoard Board::reachable() const
     output |= previous >> 1;
     output |= previous << 1;
     output |= previous << 8;
-    output &= not_wall_or_stone();
+    output &= not_obstructed();
   }
   while(output != previous);
   return BitBoard(output);
@@ -76,10 +76,35 @@ BitBoard Board::reachable() const
 
 BitBoard Board::pushable() const
 {
-  BitBoard const not_wall_or_stone = ~(m_walls | m_stones);
+  BitBoard const obstructed = m_walls | m_stones;
   BitBoard const reachables = reachable();
-  BitBoard const empty = not_wall_or_stone & ~reachables;
-  return empty;
+  BitBoard pushables(0);
+  for (int d = 1; d <= 8; d += 7)
+  {
+    BitBoard has_reachable_neighbor(
+	((m_stones() << d) & reachables()) >> d |
+	((m_stones() >> d) & reachables()) << d
+      );
+    BitBoard has_obstructed_neighbor(
+	((m_stones() << d) & obstructed()) >> d |
+	((m_stones() >> d) & obstructed()) << d
+      );
+    pushables |= has_reachable_neighbor & ~has_obstructed_neighbor;
+  }
+  return pushables;
+}
+
+BitBoard Board::targetable() const
+{
+  BitBoard const not_obstructed = ~(m_walls | m_stones);
+  BitBoard const reachables = reachable();
+  BitBoard targetables(0);
+  for (int d = 1; d <= 8; d += 7)
+  {
+    targetables |= ((((not_obstructed() << d) & m_stones()) << d) & reachables()) >> 2 * d;
+    targetables |= ((((not_obstructed() >> d) & m_stones()) >> d) & reachables()) << 2 * d;
+  }
+  return targetables;
 }
 
 void Board::read(BoardString const& inputstring)
