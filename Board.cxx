@@ -74,6 +74,14 @@ BitBoard Board::reachable() const
   return BitBoard(output);
 }
 
+BitBoard Board::pushable() const
+{
+  BitBoard const not_wall_or_stone = ~(m_walls | m_stones);
+  BitBoard const reachables = reachable();
+  BitBoard const empty = not_wall_or_stone & ~reachables;
+  return empty;
+}
+
 void Board::read(BoardString const& inputstring)
 {
   size_t len = inputstring.length();
