@@ -10,6 +10,7 @@ using namespace cwchess;
 
 class Board {
     typedef cwchess::mask_t mask_t;
+    enum directions { horizontal = 0, vertical = 1 };
 
   private:
     BitBoard m_walls;
@@ -25,6 +26,8 @@ class Board {
     void reset();
     std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard reachable() const;
+    BitBoard pushable() const;
+    BitBoard targetable() const;
     void read(BoardString const&);
     bool sane();
 

@@ -32,19 +32,21 @@ int main(){
 		"#-#-###-"
 		"#-------"
 		"########";
-	Board alpha;
-	Board beta;
-	std::stringstream setupstream;
-	BitBoard colors;
+	std::string setup_d = 
+		"########"
+		"#@----$-"
+		"###$#---"
+		"#---$--$"
+		"#--#$---"
+		"#---$###"
+		"#......-"
+		"########";
 
 	try {
-		alpha = Board(setup_a);
-		colors = alpha.reachable();
-		std::cout << alpha << std::endl;
-
-		beta = Board(setup_a);
-		colors = beta.reachable();
-		std::cout << beta.write(colors) << std::endl;
+		Board beta(setup_d);
+		std::cout << "\nReachable:\n" << beta.write(beta.reachable()) << std::endl;
+		std::cout << "\nPushable:\n" << beta.write(beta.pushable()) << std::endl;
+		std::cout << "\nTargetable:\n" << beta.write(beta.targetable()) << std::endl;
 	}
 	catch(std::runtime_error const& error) {
 		std::cout << "error: " << error.what() << std::endl;
