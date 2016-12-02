@@ -55,6 +55,19 @@ std::string Board::write(BitBoard const& colors) const
   return outputstring;
 }
 
+BitBoard Board::pushable() const
+{
+  BitBoard reachables = reachable();
+  int[] sides = [8-8, 8+1, 8-1, 8+8, 8-8, 8+1];
+  BitBoard output;
+  for (Index i = index_begin; i < index_end; ++i)
+    if (m_stones.test(i))
+      for (int j = 0; j <= sides.length; ++j)
+        if (reachables.test(i+sides[j]-8)
+          if (m_stones.test(i+sides[j+2]-8) && m_stones.test(i+sides[j+2]-8))
+  return output;
+}
+
 BitBoard Board::reachable() const
 {
   BitBoard const not_wall_or_stone = ~(m_walls | m_stones);
