@@ -45,34 +45,25 @@ class BitBoard : public cwchess::BitBoard {
   public:
     using cwchess::BitBoard::BitBoard;
 
-    friend BitBoard operator|(BitBoard const& bitboard1, BitBoard const& bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) | static_cast<cwchess::BitBoard const&>(bitboard2); }
-    friend BitBoard operator|(BitBoard const& bitboard1, BitBoardData bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) | bitboard2; }
-    friend BitBoard operator|(BitBoardData bitboard1, BitBoard const& bitboard2) { return bitboard1 | static_cast<cwchess::BitBoard const&>(bitboard2); }
-    friend BitBoard operator&(BitBoard const& bitboard1, BitBoard const& bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) & static_cast<cwchess::BitBoard const&>(bitboard2); }
-    friend BitBoard operator&(BitBoard const& bitboard1, BitBoardData bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) & bitboard2; }
-    friend BitBoard operator&(BitBoardData bitboard1, BitBoard const& bitboard2) { return bitboard1 & static_cast<cwchess::BitBoard const&>(bitboard2); }
-    friend bool operator!=(BitBoard const& bitboard1, BitBoard const& bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) != static_cast<cwchess::BitBoard const&>(bitboard2); }
-    friend bool operator!=(BitBoard const& bitboard1, BitBoardData bitboard2) { return static_cast<cwchess::BitBoard const&>(bitboard1) != bitboard2; }
-    friend bool operator!=(BitBoardData bitboard1, BitBoard const& bitboard2) { return bitboard1 != static_cast<cwchess::BitBoard const&>(bitboard2); }
-
     BitBoard& operator<<=(int bits) { M_bitmask <<= bits; return *this; }
     BitBoard& operator>>=(int bits) { M_bitmask >>= bits; return *this; }
 
     friend BitBoard operator<<(BitBoard const& bitboard, int bits) { BitBoard result(bitboard); result <<= bits; return result; }
     friend BitBoard operator>>(BitBoard const& bitboard, int bits) { BitBoard result(bitboard); result >>= bits; return result; }
 
-    BitBoard spread(int const& direction) const
+    BitBoard spread(int direction) const
     {
       using namespace directions;
-      cwchess::mask_t result = 0;
+      BitBoard const original(*this);
+      BitBoard result(empty);
       if ((direction & right))
-	result |= M_bitmask << 1;
+	result |= original << 1;
       if ((direction & down))
-	result |= M_bitmask << 8;
+	result |= original << 8;
       if ((direction & left))
-	result |= M_bitmask >> 1;
+	result |= original >> 1;
       if ((direction & up))
-	result |= M_bitmask >> 8;
-      return BitBoard(result);
+	result |= original >> 8;
+      return result;
     }
 };

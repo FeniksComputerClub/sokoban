@@ -358,18 +358,6 @@ class BitBoard : public BitBoardData {
 
   //@}
 
-  //! @name Comparison operators
-  //@{
-
-    friend bool operator==(BitBoard const& b1, BitBoard const& b2) { return b1.M_bitmask == b2.M_bitmask; }
-    friend bool operator==(BitBoard const& b1, BitBoardData b2) { return b1.M_bitmask == b2.M_bitmask; }
-    friend bool operator==(BitBoardData b1, BitBoard const& b2) { return b1.M_bitmask == b2.M_bitmask; }
-    friend bool operator!=(BitBoard const& b1, BitBoard const& b2) { return b1.M_bitmask != b2.M_bitmask; }
-    friend bool operator!=(BitBoard const& b1, BitBoardData b2) { return b1.M_bitmask != b2.M_bitmask; }
-    friend bool operator!=(BitBoardData b1, BitBoard const& b2) { return b1.M_bitmask != b2.M_bitmask; }
-
-  //@}
-
   //! @name Initialization
   //@{
 
@@ -409,7 +397,7 @@ class BitBoard : public BitBoardData {
     void reset(BitBoardData bitboard) { M_bitmask &= ~bitboard.M_bitmask; }
 
     //! @brief Reset the bits from \a bitboard.
-    void reset(BitBoard bitboard) { M_bitmask &= ~bitboard.M_bitmask; }
+    void reset(BitBoard const& bitboard) { M_bitmask &= ~bitboard.M_bitmask; }
 
     //! @brief Set the bit at \a col, \a row.
     void set(int col, int row) { M_bitmask |= colrow2mask(col, row); }
@@ -482,32 +470,20 @@ class BitBoard : public BitBoardData {
 
   //! @name Bit-wise OR operators with another BitBoard
   //@{
-    BitBoard& operator|=(BitBoard const& bitboard) { M_bitmask |= bitboard.M_bitmask; return *this; }
     BitBoard& operator|=(BitBoardData bitboard) { M_bitmask |= bitboard.M_bitmask; return *this; }
     BitBoard& operator|=(mask_t bitmask) { M_bitmask |= bitmask; return *this; }
-    friend BitBoard operator|(BitBoard const& bitboard1, BitBoard const& bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
-    friend BitBoard operator|(BitBoard const& bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
-    friend BitBoard operator|(BitBoardData bitboard1, BitBoard const& bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
   //@}
 
   //! @name Bit-wise AND operators with another BitBoard
   //@{
-    BitBoard& operator&=(BitBoard const& bitboard) { M_bitmask &= bitboard.M_bitmask; return *this; }
     BitBoard& operator&=(BitBoardData bitboard) { M_bitmask &= bitboard.M_bitmask; return *this; }
     BitBoard& operator&=(mask_t bitmask) { M_bitmask &= bitmask; return *this; }
-    friend BitBoard operator&(BitBoard bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
-    friend BitBoard operator&(BitBoard bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
-    friend BitBoard operator&(BitBoardData bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
   //@}
 
   //! @name Bit-wise XOR operators with another BitBoard
   //@{
-    BitBoard& operator^=(BitBoard const& bitboard) { M_bitmask ^= bitboard.M_bitmask; return *this; }
     BitBoard& operator^=(BitBoardData bitboard) { M_bitmask ^= bitboard.M_bitmask; return *this; }
     BitBoard& operator^=(mask_t bitmask) { M_bitmask ^= bitmask; return *this; }
-    friend BitBoard operator^(BitBoard bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
-    friend BitBoard operator^(BitBoard bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
-    friend BitBoard operator^(BitBoardData bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
   //@}
 
 };

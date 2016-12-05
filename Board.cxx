@@ -118,7 +118,7 @@ bool Board::sane()
     errorstring.append("The amount of stones is not equal to the amount of goals!\n");
   if ((m_walls & default_walls) != default_walls)
     errorstring.append("Surrounding walls are missing! (should never occur)\n");
-  if (((m_stones & m_walls) != 0) && ((m_targets & m_walls) != 0) && ((BitBoard(m_player) & m_walls) != 0))
+  if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((BitBoard(m_player) & m_walls) != empty))
     errorstring.append("Another object is inside a wall! (should never occur)\n");
   if (m_player == s_noplayer)
     errorstring.append("No player defined!\n");
