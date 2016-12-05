@@ -78,19 +78,6 @@ BitBoard Board::pushable(BitBoard const& reachables, int direction) const
   return reachables.spread(direction) & m_stones & not_obstructed.spread();
 }
 
-BitBoard Board::targetable() const // unused
-{
-  BitBoard const not_obstructed = ~(m_walls | m_stones);
-  BitBoard const reachables = reachable();
-  BitBoard targetables(0);
-  for (int d = 1; d <= 8; d += 7)
-  {
-    targetables |= ((((not_obstructed() << d) & m_stones()) << d) & reachables()) >> 2 * d;
-    targetables |= ((((not_obstructed() >> d) & m_stones()) >> d) & reachables()) << 2 * d;
-  }
-  return targetables;
-}
-
 void Board::read(BoardString const& inputstring)
 {
   size_t len = inputstring.length();
