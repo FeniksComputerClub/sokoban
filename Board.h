@@ -18,6 +18,7 @@ class Board {
     BitBoard m_targets;
     Index m_player;
     static Index const s_noplayer;
+    BitBoard spread(BitBoard const& input, int const& direction) const;
 
   public:
     Board();
@@ -26,8 +27,8 @@ class Board {
     void reset();
     std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard reachable() const;
-    BitBoard pushable() const;
-    BitBoard targetable() const;
+    BitBoard pushable(BitBoard const& reachables, int const& direction) const; // directions: 0 = right, 1 = down, 2 = left, 3 = up
+    BitBoard targetable() const; // unused
     void read(BoardString const&);
     bool sane();
 

@@ -5,6 +5,11 @@
 #include <sstream>
 #include <stdexcept>
 
+#define RIGHT 0
+#define DOWN 1
+#define LEFT 2
+#define UP 3
+
 BitBoard const empty(0);
 BitBoard const default_walls = file_a|rank_1|rank_8;
 
@@ -55,59 +60,49 @@ std::string Board::write(BitBoard const& colors) const
   return outputstring;
 }
 
-BitBoard Board::pushable() const
-{
-  BitBoard reachables = reachable();
-  int[] sides = [8-8, 8+1, 8-1, 8+8, 8-8, 8+1];
-  BitBoard output;
-  for (Index i = index_begin; i < index_end; ++i)
-    if (m_stones.test(i))
-      for (int j = 0; j <= sides.length; ++j)
-        if (reachables.test(i+sides[j]-8)
-          if (m_stones.test(i+sides[j+2]-8) && m_stones.test(i+sides[j+2]-8))
-  return output;
-}
-
 BitBoard Board::reachable() const
 {
-  BitBoard const not_obstructed = ~(m_walls | m_stones);
-  BitBoard player(m_player);
-  mask_t output = player();
-  mask_t previous;
+  mask_t const not_obstructed = BitBoard(~(m_walls | m_stones))();
+  mask_t output = BitBoard(m_player)();
+  mask_t previous(0);
   do
   {
     previous = output;
-    output |= previous >> 8;
-    output |= previous >> 1;
-    output |= previous << 1;
-    output |= previous << 8;
-    output &= not_obstructed();
+    output |= /*spread(previous, 4)*/(previous >> 8 | previous >> 1 | previous << 1 | previous << 8) & not_obstructed;
   }
   while(output != previous);
   return BitBoard(output);
 }
 
-BitBoard Board::pushable() const
+BitBoard Board::spread(BitBoard const& input, int const& direction) const
 {
-  BitBoard const obstructed = m_walls | m_stones;
-  BitBoard const reachables = reachable();
-  BitBoard pushables(0);
-  for (int d = 1; d <= 8; d += 7)
+  mask_t inputmask = input();
+  switch(direction)
   {
-    BitBoard has_reachable_neighbor(
-	((m_stones() << d) & reachables()) >> d |
-	((m_stones() >> d) & reachables()) << d
-      );
-    BitBoard has_obstructed_neighbor(
-	((m_stones() << d) & obstructed()) >> d |
-	((m_stones() >> d) & obstructed()) << d
-      );
-    pushables |= has_reachable_neighbor & ~has_obstructed_neighbor;
+    case RIGHT : return BitBoard(inputmask << 1); break;
+    case DOWN : return BitBoard(inputmask << 8); break;
+    case LEFT : return BitBoard(inputmask >> 1); break;
+    case UP : return BitBoard(inputmask >> 8); break;
+    default : return BitBoard(inputmask >> 8 | inputmask >> 1 | inputmask << 1 | inputmask << 8); break;
   }
-  return pushables;
 }
 
-BitBoard Board::targetable() const
+BitBoard Board::pushable(BitBoard const& reachables, int const& direction) const // directions: 0 = right, 1 = down, 2 = left, 3 = up
+{
+  mask_t const empty = ~(m_walls | m_stones)();
+  mask_t pushables(0);
+  switch(direction)
+  {
+    case RIGHT : pushables = (m_stones() & (reachables() << 1)) & (empty >> 1); break;
+    case DOWN : pushables = (m_stones() & (reachables() << 8)) & (empty >> 8); break;
+    case LEFT : pushables = (m_stones() & (reachables() >> 1)) & (empty << 1); break;
+    case UP : pushables = (m_stones() & (reachables() >> 8)) & (empty << 8); break;
+    default : pushables = (m_stones() & (reachables() << 1)) & (empty >> 1); break;
+  }
+  return /*spread(reachables, direction) & m_stones & spread(~(m_walls | m_stones), (direction + 2) % 4);*/ BitBoard(pushables);
+}
+
+BitBoard Board::targetable() const // unused
 {
   BitBoard const not_obstructed = ~(m_walls | m_stones);
   BitBoard const reachables = reachable();
