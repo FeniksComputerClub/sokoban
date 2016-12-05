@@ -9,8 +9,11 @@ namespace directions
 
   int reverse(int direction)
   {
-    int m = direction ^ (direction << 2);
+    // Swap left/right and up/down bits.
+    int m = direction;
+    m ^= m << 2;
     m |= m >> 2;
+    m &= 15;
     return direction ^ m;
   }
 } // namespace directions
