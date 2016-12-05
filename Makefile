@@ -39,4 +39,4 @@ clean:
 	rm -f *.o *.d test
 
 tags:
-	ctags -f tags *.h *.cxx
+	ctags -f tags *.h *.cxx cwchess/*.h

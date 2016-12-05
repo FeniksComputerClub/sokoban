@@ -263,7 +263,7 @@ uint64_t const bitboard_destructed_magic = 555555555555555555;
  * \link cwchess::rank_1 rank_1 \endlink, ..., \link cwchess::rank_8 rank_8 \endlink<br>
  * and others.
  */
-class BitBoard : private BitBoardData {
+class BitBoard : public BitBoardData {
 #if DEBUG_BITBOARD_INITIALIZATION
   private:
     uint64_t M_initialized;
