@@ -68,7 +68,7 @@ BitBoard Board::reachable() const
   do
   {
     previous = output;
-    output |= /*spread(previous, 4)*/(previous >> 8 | previous >> 1 | previous << 1 | previous << 8) & not_obstructed;
+    output |= /*spread(previous, 4)*/(previous >> 8 | previous >> 1 | previous << 1 | previous << 8)/**/ & not_obstructed;
   }
   while(output != previous);
   return BitBoard(output);
@@ -99,20 +99,7 @@ BitBoard Board::pushable(BitBoard const& reachables, int const& direction) const
     case UP : pushables = (m_stones() & (reachables() >> 8)) & (empty << 8); break;
     default : pushables = (m_stones() & (reachables() << 1)) & (empty >> 1); break;
   }
-  return /*spread(reachables, direction) & m_stones & spread(~(m_walls | m_stones), (direction + 2) % 4);*/ BitBoard(pushables);
-}
-
-BitBoard Board::targetable() const // unused
-{
-  BitBoard const not_obstructed = ~(m_walls | m_stones);
-  BitBoard const reachables = reachable();
-  BitBoard targetables(0);
-  for (int d = 1; d <= 8; d += 7)
-  {
-    targetables |= ((((not_obstructed() << d) & m_stones()) << d) & reachables()) >> 2 * d;
-    targetables |= ((((not_obstructed() >> d) & m_stones()) >> d) & reachables()) << 2 * d;
-  }
-  return targetables;
+  return /*spread(reachables, direction) & m_stones & spread(~(m_walls | m_stones), (direction + 2) % 4);*/ BitBoard(pushables);/**/
 }
 
 void Board::read(BoardString const& inputstring)
