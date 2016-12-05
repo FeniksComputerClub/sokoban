@@ -25,7 +25,7 @@ class Board {
     void reset();
     std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard reachable() const;
-    BitBoard pushable(BitBoard const& reachables, int const& direction) const; // directions: 0 = right, 1 = down, 2 = left, 3 = up
+    BitBoard pushable(BitBoard const& reachables, int direction) const;
     void read(BoardString const&);
     bool sane();
 

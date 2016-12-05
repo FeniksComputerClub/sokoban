@@ -1,3 +1,5 @@
+#pragma once
+
 #include "cwchess/BitBoard.h"
 
 namespace directions
@@ -7,7 +9,7 @@ namespace directions
   int const left = 4;
   int const up = 8;
 
-  int reverse(int direction)
+  inline int reverse(int direction)
   {
     // Swap left/right and up/down bits.
     int m = direction;
@@ -16,15 +18,28 @@ namespace directions
     m &= 15;
     return direction ^ m;
   }
+
+  inline char const* name(int direction)
+  {
+    switch(direction)
+    {
+      case right: return "right";
+      case down: return "down";
+      case left: return "left";
+      case up: return "up";
+    }
+    return "UNKNOWN";
+  }
 } // namespace directions
 
 using cwchess::Index;
 using cwchess::index_end;
 using cwchess::index_begin;
 using cwchess::index_pre_begin;
-using cwchess::file_a;
-using cwchess::rank_1;
-using cwchess::rank_8;
+
+// POD constants.
+cwchess::BitBoardData const empty = { CW_MASK_T_CONST(0x0) };
+cwchess::BitBoardData const default_walls = cwchess::file_a|cwchess::rank_1|cwchess::rank_8;
 
 class BitBoard : public cwchess::BitBoard {
   public:

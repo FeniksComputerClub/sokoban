@@ -40,3 +40,5 @@ clean:
 
 tags:
 	ctags -f tags *.h *.cxx cwchess/*.h
+
+.PHONY: clean tags

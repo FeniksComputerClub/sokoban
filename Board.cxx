@@ -4,11 +4,9 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
+#include <cassert>
 
 using namespace directions;
-
-BitBoard const empty(0);
-BitBoard const default_walls = file_a|rank_1|rank_8;
 
 Index const Board::s_noplayer(index_end);
 
@@ -73,9 +71,9 @@ BitBoard Board::reachable() const
 
 BitBoard Board::pushable(BitBoard const& reachables, int direction) const
 {
-  assert(direction & (direction -1) == 0); // Only one bit may be set.
+  assert((direction & (direction -1)) == 0); // Only one bit may be set.
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  return reachables.spread(direction) & m_stones & not_obstructed.spread();
+  return reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
 }
 
 void Board::read(BoardString const& inputstring)
