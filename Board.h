@@ -14,9 +14,8 @@ class Board {
     BitBoard m_walls;
     BitBoard m_stones;
     BitBoard m_targets;
-    Index m_player;
-    static Index const s_noplayer;
-    BitBoard spread(BitBoard const& input, int const& direction) const;
+    BitBoard m_reachables;
+    void reachable(Index start);
 
   public:
     Board();
@@ -24,10 +23,11 @@ class Board {
 
     void reset();
     std::string write(BitBoard const& colors = BitBoard(0)) const;
-    BitBoard reachable() const;
-    BitBoard pushable(BitBoard const& reachables, int direction) const;
+    BitBoard pushable(int direction) const;
     void read(BoardString const&);
     bool sane();
+
+    BitBoard getreachables() const;
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);

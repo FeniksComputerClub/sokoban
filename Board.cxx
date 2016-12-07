@@ -8,8 +8,6 @@
 
 using namespace directions;
 
-Index const Board::s_noplayer(index_end);
-
 Board::Board()
 {
   reset();
@@ -25,12 +23,13 @@ void Board::reset()
   m_walls = default_walls;
   m_stones = empty;
   m_targets = empty;
-  m_player = s_noplayer;
+  m_reachables = empty;
 }
 
 std::string Board::write(BitBoard const& colors) const
 {
   std::string outputstring;
+  bool isplayerset = false;
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i() > 0 && i() % 8 == 0)
@@ -38,55 +37,65 @@ std::string Board::write(BitBoard const& colors) const
 
     bool iscolorset = colors.test(i);
     if (iscolorset)
-      outputstring += "\e[45m";
+      outputstring += "\e[41m";
+
     if (m_walls.test(i))
       outputstring += '#';
     else if (m_stones.test(i))
       outputstring += (m_targets.test(i) ? '*' : '$');
+    else if (m_reachables.test(i)) {
+      if (!iscolorset) {
+        iscolorset = true;
+        outputstring += "\e[46m";
+      }
+      if (!isplayerset) {
+        isplayerset = true;
+        outputstring += (m_targets.test(i) ? '+' : '@');
+      } else
+        outputstring += ' ';
+    }
     else if (m_targets.test(i))
-      outputstring += (i == m_player ? '+' : '.');
-    else if (i == m_player)
-      outputstring += '@';
+      outputstring += '.';
     else
       outputstring += ' ';
+
     if (iscolorset)
       outputstring += "\e[0m";
   }
   return outputstring;
 }
 
-BitBoard Board::reachable() const
+void Board::reachable(Index start)
 {
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  BitBoard output(m_player);
+  m_reachables = BitBoard(start);
   BitBoard previous(0);
   do
   {
-    previous = output;
-    output |= output.spread(left|right|up|down) & not_obstructed;
+    previous = m_reachables;
+    m_reachables |= m_reachables.spread(left|right|up|down) & not_obstructed;
   }
-  while(output != previous);
-  return BitBoard(output);
+  while(m_reachables != previous);
 }
 
-BitBoard Board::pushable(BitBoard const& reachables, int direction) const
+BitBoard Board::pushable(int direction) const
 {
   assert((direction & (direction -1)) == 0); // Only one bit may be set.
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  return reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
+  return m_reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
 }
 
 void Board::read(BoardString const& inputstring)
 {
   size_t len = inputstring.length();
-  bool manyplayers = false;
-
   reset();
   if (len < 64)
     throw std::runtime_error("input too short");
   else if (len > 64)
     throw std::runtime_error("input too long");
 
+  Index player(index_end);
+  bool manyplayers = false;
   for(Index i = index_begin; i < index_end; ++i)
   {
     if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
@@ -97,14 +106,15 @@ void Board::read(BoardString const& inputstring)
     else if (readchar == '$' || readchar == '*')
       m_stones.set(i);
     else if (readchar == '@' || readchar == '+') {
-      if (m_player == s_noplayer)
-        m_player = i;
+      if (player == index_end)
+        player = i;
       else
         manyplayers = true;
     }
     if (readchar == '.' || readchar == '*' || readchar == '+')
       m_targets.set(i);
   }
+  reachable(player);
 
   if (!sane() ||  manyplayers) {
     if(manyplayers)
@@ -116,20 +126,24 @@ void Board::read(BoardString const& inputstring)
 bool Board::sane()
 {
   std::string errorstring;
+  if (m_reachables == empty)
+    errorstring.append("No player defined!\n");
+  if (m_targets == empty)
+    errorstring.append("There are no goals!\n");
   if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
     errorstring.append("The amount of stones is not equal to the amount of goals!\n");
   if ((m_walls & default_walls) != default_walls)
     errorstring.append("Surrounding walls are missing! (should never occur)\n");
-  if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((BitBoard(m_player) & m_walls) != empty))
+  if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
     errorstring.append("Another object is inside a wall! (should never occur)\n");
-  if (m_player == s_noplayer)
-    errorstring.append("No player defined!\n");
 
   if(errorstring == "")
     return true;
   std::cout << "error: " << errorstring;
   return false;
 }
+
+BitBoard Board::getreachables() const {return m_reachables;}
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {

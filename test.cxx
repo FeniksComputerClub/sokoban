@@ -44,10 +44,12 @@ int main(){
 
   try {
     Board beta(setup_d);
-    BitBoard reachables = beta.reachable();
-    std::cout << "\nReachable:\n" << beta.write(reachables) << std::endl;
     for (int i = 1; i <= 8; i <<= 1)
-      std::cout << "\nPushable direction " << directions::name(i) << ":\n" << beta.write(beta.pushable(reachables, i)) << std::endl;
+      std::cout << "\nPushable direction " << directions::name(i) << ":\n" << beta.write(beta.pushable(i)) << std::endl;
+    std::cout << "test: ";
+    for (int i = 0; i <= 99; ++i)
+      std::cout << "\e[" << i << "m-" << i << "-";
+    std::cout << std::endl;
   }
   catch(std::runtime_error const& error) {
     std::cout << "error: " << error.what() << std::endl;
