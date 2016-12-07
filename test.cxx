@@ -47,7 +47,7 @@ int main(){
     for (int i = 1; i <= 8; i <<= 1)
       std::cout << "\nPushable direction " << directions::name(i) << ":\n" << beta.write(beta.pushable(i)) << std::endl;
     std::cout << "test: ";
-    for (int i = 0; i <= 99; ++i)
+    for (int i = 0; i <= 120; ++i)
       std::cout << "\e[" << i << "m-" << i << "-";
     std::cout << std::endl;
   }
