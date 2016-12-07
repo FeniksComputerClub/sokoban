@@ -82,8 +82,10 @@ void Board::read(BoardString const& inputstring)
   bool manyplayers = false;
 
   reset();
-  if (len != 64)
+  if (len < 64)
     throw std::runtime_error("input too short");
+  else if (len > 64)
+    throw std::runtime_error("input too long");
 
   for(Index i = index_begin; i < index_end; ++i)
   {
