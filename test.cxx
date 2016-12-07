@@ -48,7 +48,7 @@ int main(){
       std::cout << "\nPushable direction " << directions::name(i) << ":\n" << beta.write(beta.pushable(i)) << std::endl;
     std::cout << "test: ";
     for (int i = 0; i <= 120; ++i)
-      std::cout << "\e[" << i << "m-" << i << "-";
+      std::cout << "\e[" << i << "m-" << i << "-" << "\e[0m";
     std::cout << std::endl;
   }
   catch(std::runtime_error const& error) {

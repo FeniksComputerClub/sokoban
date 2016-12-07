@@ -28,6 +28,11 @@ void Board::reset()
 
 std::string Board::write(BitBoard const& colors) const
 {
+  static char const* const reset_color = "\e[0m";
+  static char const* const marker_color = "\e[104m";
+  static char const* const reachable_color = "\e[102m";
+  static char const* const wall_color = "\e[41m";
+
   std::string outputstring;
   bool isplayerset = false;
   for (Index i = index_begin; i < index_end; ++i)
@@ -37,21 +42,32 @@ std::string Board::write(BitBoard const& colors) const
 
     bool iscolorset = colors.test(i);
     if (iscolorset)
-      outputstring += "\e[41m";
+      outputstring += marker_color;
 
     if (m_walls.test(i))
-      outputstring += '#';
-    else if (m_stones.test(i))
-      outputstring += (m_targets.test(i) ? '*' : '$');
-    else if (m_reachables.test(i)) {
-      if (!iscolorset) {
-        iscolorset = true;
-        outputstring += "\e[46m";
+    {
+      if (0 && !iscolorset)
+      {
+	outputstring += wall_color;
+	iscolorset = true;
       }
-      if (!isplayerset) {
+      outputstring += '#';
+    }
+    else if (m_stones.test(i))
+      outputstring += m_targets.test(i) ? '*' : '$';
+    else if (m_reachables.test(i))
+    {
+      if (!iscolorset)
+      {
+        outputstring += reachable_color;
+        iscolorset = true;
+      }
+      if (!isplayerset)
+      {
+        outputstring += m_targets.test(i) ? '+' : '@';
         isplayerset = true;
-        outputstring += (m_targets.test(i) ? '+' : '@');
-      } else
+      }
+      else
         outputstring += ' ';
     }
     else if (m_targets.test(i))
@@ -60,7 +76,7 @@ std::string Board::write(BitBoard const& colors) const
       outputstring += ' ';
 
     if (iscolorset)
-      outputstring += "\e[0m";
+      outputstring += reset_color;
   }
   return outputstring;
 }
