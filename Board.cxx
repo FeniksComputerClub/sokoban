@@ -87,19 +87,19 @@ BitBoard Board::pushable(int direction) const
 
 void Board::read(BoardString const& inputstring)
 {
-  size_t len = inputstring.length();
   reset();
-  if (len < 64)
-    throw std::runtime_error("input too short");
-  else if (len > 64)
-    throw std::runtime_error("input too long");
+
+  size_t const len = inputstring.length();
+  if (len != 64)
+    throw std::runtime_error(len < 64 ? "input too short" : "input too long");
 
   Index player(index_end);
   bool manyplayers = false;
-  for(Index i = index_begin; i < index_end; ++i)
+  for (Index i = index_begin; i != index_end; ++i)
   {
-    if (i() < 8 || (i() > 0 && i() % 8 == 0) || i() > 8 * 7)
+    if ((default_walls.M_bitmask & index2mask(i))) // default_walls.test(i)
       continue;
+
     char readchar = inputstring[i()];
     if (readchar == '#')
       m_walls.set(i);
@@ -116,8 +116,9 @@ void Board::read(BoardString const& inputstring)
   }
   reachable(player);
 
-  if (!sane() ||  manyplayers) {
-    if(manyplayers)
+  if (!sane() || manyplayers)
+  {
+    if (manyplayers)
       std::cout << "error: There are multiple players in input!" << std::endl;
     throw std::runtime_error("invalid input");
   }
