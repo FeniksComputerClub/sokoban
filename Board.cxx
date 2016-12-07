@@ -105,7 +105,8 @@ void Board::read(BoardString const& inputstring)
       m_walls.set(i);
     else if (readchar == '$' || readchar == '*')
       m_stones.set(i);
-    else if (readchar == '@' || readchar == '+') {
+    else if (readchar == '@' || readchar == '+')
+    {
       if (player == index_end)
         player = i;
       else
