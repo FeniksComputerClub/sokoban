@@ -263,7 +263,7 @@ uint64_t const bitboard_destructed_magic = 555555555555555555;
  * \link cwchess::rank_1 rank_1 \endlink, ..., \link cwchess::rank_8 rank_8 \endlink<br>
  * and others.
  */
-class BitBoard : public BitBoardData {
+class BitBoard : protected BitBoardData {
 #if DEBUG_BITBOARD_INITIALIZATION
   private:
     uint64_t M_initialized;
@@ -271,16 +271,16 @@ class BitBoard : public BitBoardData {
 
   public:
 #if DEBUG_BITBOARD_INITIALIZATION
-    BitBoard(void) : M_initialized(0) { }    
-    ~BitBoard(void) { M_initialized = bitboard_destructed_magic; }
+    BitBoard() : M_initialized(0) { }    
+    ~BitBoard() { M_initialized = bitboard_destructed_magic; }
 
-    bool is_initialized(void) const { return M_initialized == bitboard_initialization_magic; }
+    bool is_initialized() const { return M_initialized == bitboard_initialization_magic; }
 #else
   //! @name Constructors
   //@{
 
     //! Construct an uninitialized BitBoard.
-    BitBoard(void) { }    
+    BitBoard() { }    
 
 #endif
 
@@ -304,7 +304,7 @@ class BitBoard : public BitBoardData {
     }
 
     //! Construct a BitBoard from a constant.
-    BitBoard(BitBoardData data)
+    explicit BitBoard(BitBoardData data)
     {
 #if DEBUG_BITBOARD_INITIALIZATION
       M_initialized = bitboard_initialization_magic;
@@ -358,11 +358,23 @@ class BitBoard : public BitBoardData {
 
   //@}
 
+  //! @name Comparison operators
+  //@{
+
+    friend bool operator==(BitBoard const& b1, BitBoard const& b2) { return b1.M_bitmask == b2.M_bitmask; }
+    friend bool operator==(BitBoard const& b1, BitBoardData b2) { return b1.M_bitmask == b2.M_bitmask; }
+    friend bool operator==(BitBoardData b1, BitBoard const& b2) { return b1.M_bitmask == b2.M_bitmask; }
+    friend bool operator!=(BitBoard const& b1, BitBoard const& b2) { return b1.M_bitmask != b2.M_bitmask; }
+    friend bool operator!=(BitBoard const& b1, BitBoardData b2) { return b1.M_bitmask != b2.M_bitmask; }
+    friend bool operator!=(BitBoardData b1, BitBoard const& b2) { return b1.M_bitmask != b2.M_bitmask; }
+
+  //@}
+
   //! @name Initialization
   //@{
 
     //! Set all values to FALSE.
-    void reset(void)
+    void reset()
     {
 #if DEBUG_BITBOARD_INITIALIZATION
       M_initialized = bitboard_initialization_magic;
@@ -371,7 +383,7 @@ class BitBoard : public BitBoardData {
     }
 
     //! Set all values to TRUE.
-    void set(void)
+    void set()
     {
 #if DEBUG_BITBOARD_INITIALIZATION
       M_initialized = bitboard_initialization_magic;
@@ -435,7 +447,7 @@ class BitBoard : public BitBoardData {
   //@{
 
     //! @brief Test if any bit is set at all.
-    bool test(void) const { return M_bitmask; }
+    bool test() const { return M_bitmask; }
 
     //! @brief Test if the bit at \a col, \a row is set.
     bool test(int col, int row) const { return M_bitmask & colrow2mask(col, row); }
@@ -453,37 +465,49 @@ class BitBoard : public BitBoardData {
     bool test(BitBoard const& bitboard) const { return M_bitmask & bitboard.M_bitmask; }
 
     //! @brief Return the inverse of the bitboard.
-    BitBoard operator~(void) const { return BitBoard(~M_bitmask); }
+    BitBoard operator~() const { return BitBoard(~M_bitmask); }
 
     //! @brief Return TRUE if the bitboard is not empty.
 #ifdef __x86_64
-    operator void*(void) const { return reinterpret_cast<void*>(M_bitmask); }
+    operator void*() const { return reinterpret_cast<void*>(M_bitmask); }
 #else
     // Casting to void* would only give us the lower 32 bits.
-    operator void*(void) const { return M_bitmask ? (void*)1 : 0; }
+    operator void*() const { return M_bitmask ? (void*)1 : 0; }
 #endif
 
     //! @brief Return the underlaying bitmask.
-    mask_t operator()(void) const { return M_bitmask; }
+    mask_t operator()() const { return M_bitmask; }
 
   //@}
 
   //! @name Bit-wise OR operators with another BitBoard
   //@{
+    BitBoard& operator|=(BitBoard const& bitboard) { M_bitmask |= bitboard.M_bitmask; return *this; }
     BitBoard& operator|=(BitBoardData bitboard) { M_bitmask |= bitboard.M_bitmask; return *this; }
     BitBoard& operator|=(mask_t bitmask) { M_bitmask |= bitmask; return *this; }
+    friend BitBoard operator|(BitBoard const& bitboard1, BitBoard const& bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
+    friend BitBoard operator|(BitBoard const& bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
+    friend BitBoard operator|(BitBoardData bitboard1, BitBoard const& bitboard2) { return BitBoard(bitboard1.M_bitmask | bitboard2.M_bitmask); }
   //@}
 
   //! @name Bit-wise AND operators with another BitBoard
   //@{
+    BitBoard& operator&=(BitBoard const& bitboard) { M_bitmask &= bitboard.M_bitmask; return *this; }
     BitBoard& operator&=(BitBoardData bitboard) { M_bitmask &= bitboard.M_bitmask; return *this; }
     BitBoard& operator&=(mask_t bitmask) { M_bitmask &= bitmask; return *this; }
+    friend BitBoard operator&(BitBoard bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
+    friend BitBoard operator&(BitBoard bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
+    friend BitBoard operator&(BitBoardData bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask & bitboard2.M_bitmask); }
   //@}
 
   //! @name Bit-wise XOR operators with another BitBoard
   //@{
+    BitBoard& operator^=(BitBoard const& bitboard) { M_bitmask ^= bitboard.M_bitmask; return *this; }
     BitBoard& operator^=(BitBoardData bitboard) { M_bitmask ^= bitboard.M_bitmask; return *this; }
     BitBoard& operator^=(mask_t bitmask) { M_bitmask ^= bitmask; return *this; }
+    friend BitBoard operator^(BitBoard bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
+    friend BitBoard operator^(BitBoard bitboard1, BitBoardData bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
+    friend BitBoard operator^(BitBoardData bitboard1, BitBoard bitboard2) { return BitBoard(bitboard1.M_bitmask ^ bitboard2.M_bitmask); }
   //@}
 
 };
