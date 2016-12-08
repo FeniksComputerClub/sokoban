@@ -44,12 +44,24 @@ int main(){
 
   try {
     Board beta(setup_d);
-    for (int i = 1; i <= 8; i <<= 1)
-      std::cout << "\nPushable direction " << directions::name(i) << ":\n" << beta.write(beta.pushable(i)) << std::endl;
+    for (int direction = 1; direction <= 8; direction <<= 1)
+    {
+      BitBoard const pushables(beta.pushable(direction));
+      Index pushable_stone = index_pre_begin;
+      pushable_stone.next_bit_in(pushables());
+      while (pushable_stone != index_end)
+      {
+	std::cout << "\nThis stone can be pushed " << directions::name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
+	pushable_stone.next_bit_in(pushables());
+      }
+    }
+
+#if 0
     std::cout << "test: ";
     for (int i = 0; i <= 120; ++i)
       std::cout << "\e[" << i << "m-" << i << "-" << "\e[0m";
     std::cout << std::endl;
+#endif
   }
   catch(std::runtime_error const& error) {
     std::cout << "error: " << error.what() << std::endl;
