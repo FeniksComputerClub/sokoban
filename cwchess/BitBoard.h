@@ -304,7 +304,7 @@ class BitBoard : protected BitBoardData {
     }
 
     //! Construct a BitBoard from a constant.
-    explicit BitBoard(BitBoardData data)
+    BitBoard(BitBoardData data)
     {
 #if DEBUG_BITBOARD_INITIALIZATION
       M_initialized = bitboard_initialization_magic;
