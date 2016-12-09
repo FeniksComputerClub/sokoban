@@ -51,8 +51,8 @@ int main(){
       pushable_stone.next_bit_in(pushables());
       while (pushable_stone != index_end)
       {
-	std::cout << "\nThis stone can be pushed " << directions::name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
-	pushable_stone.next_bit_in(pushables());
+        std::cout << "\nThis stone can be pushed " << directions::name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
+        pushable_stone.next_bit_in(pushables());
       }
     }
 
