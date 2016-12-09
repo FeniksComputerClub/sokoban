@@ -88,7 +88,7 @@ void Board::reachable(Index start)
 
 BitBoard Board::pushable(int direction) const
 {
-  assert((direction & (direction -1)) == 0); // Only one bit may be set.
+  direction -= direction & (direction -1); // Only one bit may be set.
   BitBoard const not_obstructed = ~(m_walls | m_stones);
   return m_reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
 }

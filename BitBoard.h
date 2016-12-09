@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cwchess/BitBoard.h"
+#include <string>
 
 namespace directions
 {
@@ -12,23 +13,22 @@ namespace directions
   inline int reverse(int direction)
   {
     // Swap left/right and up/down bits.
-    int m = direction;
-    m ^= m << 2;
-    m |= m >> 2;
-    m &= 15;
-    return direction ^ m;
+    return ((direction >> 2) | (direction << 2)) & (right | down | left | up);
   }
 
   inline char const* name(int direction)
   {
-    switch(direction)
-    {
-      case right: return "right";
-      case down: return "down";
-      case left: return "left";
-      case up: return "up";
-    }
-    return "UNKNOWN";
+    std::string names;
+    if ((direction & right))
+      names.append(" and right");
+    if ((direction & down))
+      names.append(" and down");
+    if ((direction & left))
+      names.append(" and left");
+    if ((direction & up))
+      names.append(" and up");
+    names = names.substr(5);
+    return names.c_str();
   }
 } // namespace directions
 
@@ -112,6 +112,6 @@ class BitBoard : public cwchess::BitBoard {
         result |= original >> 1;
       if ((direction & up))
         result |= original >> 8;
-      return result;
+      return result & ~original;
     }
 };

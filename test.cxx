@@ -43,15 +43,16 @@ int main(){
     "########";
 
   try {
+    using namespace directions;
     Board beta(setup_d);
-    for (int direction = 1; direction <= 8; direction <<= 1)
+    for (int direction = right; direction <= up; direction += 1)
     {
       BitBoard const pushables(beta.pushable(direction));
       Index pushable_stone = index_pre_begin;
       pushable_stone.next_bit_in(pushables());
       while (pushable_stone != index_end)
       {
-        std::cout << "\nThis stone can be pushed " << directions::name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
+        std::cout << "\nThis stone can be pushed " << name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
         pushable_stone.next_bit_in(pushables());
       }
     }
