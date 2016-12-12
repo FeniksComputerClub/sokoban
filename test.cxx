@@ -61,7 +61,7 @@ int main(){
       pushable_stone.next_bit_in(BitBoard(*it)());
       while (pushable_stone != index_end)
       {
-      std::cout << "go 3" << std::endl;
+        std::cout << "go 3" << std::endl;
         Board moved = beta;
         moved.move(pushable_stone, 1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1));
         std::cout << "\nThis stone is pushed " << name(1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1)) << ":\n" << beta.write(pushable_stone) << std::endl;
@@ -77,6 +77,13 @@ int main(){
 #endif
   }
   catch(std::runtime_error const& error) {
-    std::cout << "error: " << error.what() << std::endl;
+    std::cout << "runtime error: " << error.what() << std::endl;
   }
+  catch(std::logic_error const& error) {
+    std::cout << "logic error: " << error.what() << std::endl;
+  }
+  catch(std::exception const& error) {
+    std::cerr << "EXCEPTION!" << std::endl;
+  }
+  std::cout << "Leaving main()" << std::endl;
 }
