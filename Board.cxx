@@ -4,7 +4,6 @@
 #include <iomanip>
 #include <sstream>
 #include <stdexcept>
-#include <cassert>
 
 using namespace directions;
 
@@ -99,9 +98,29 @@ void Board::move(Index stone, int direction)
   if(pushable(direction).test(stone))
   {
     m_stones.toggle(stone);
-    m_stones |= BitBoard(stone).spread(direction);
+    m_stones |= (BitBoard(stone).spread(direction));
     reachable(stone);
   }
+}
+
+std::list<Board> Board::get_moves() const
+{
+  std::list<Board> boardlist;
+  for (int direction = right; direction <= up; direction <<= 1)
+  {
+    BitBoard pushables = pushable(direction);
+    Index pushable_stone = index_pre_begin;
+    while (true)
+    {
+      pushable_stone.next_bit_in(pushables());
+      if (pushable_stone == index_end)
+        break;
+      Board moved(*this);
+      moved.move(pushable_stone, direction);
+      boardlist.push_back(moved);
+    }
+  }
+  return boardlist;
 }
 
 void Board::read(BoardString const& inputstring)

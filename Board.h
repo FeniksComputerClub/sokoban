@@ -3,6 +3,7 @@
 #include "BitBoard.h"
 #include <iosfwd>
 #include <string>
+#include <list>
 
 typedef std::string BoardString;
 
@@ -25,6 +26,7 @@ class Board {
     std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard pushable(int direction) const;
     void move(Index stone, int direction);
+    std::list<Board> get_moves() const;
     void read(BoardString const&);
     bool sane() const;
 

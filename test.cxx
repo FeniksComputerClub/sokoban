@@ -47,26 +47,12 @@ int main(){
     using namespace directions;
     Board beta(setup_d);
 
-    std::list<BitBoard> boardlist;
-    for (int direction = right; direction <= up; direction <<= 1)
-      boardlist.push_back(beta.pushable(direction));
-
-    std::list<BitBoard>::const_iterator it;
+    std::list<Board> boardlist = beta.get_moves();
+    std::list<Board>::const_iterator it;
     it = boardlist.begin();
-      std::cout << "go 1" << std::endl;
     while (it != boardlist.end())
     {
-      std::cout << "go 2" << std::endl;
-      Index pushable_stone = index_pre_begin;
-      pushable_stone.next_bit_in(BitBoard(*it)());
-      while (pushable_stone != index_end)
-      {
-        std::cout << "go 3" << std::endl;
-        Board moved = beta;
-        moved.move(pushable_stone, 1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1));
-        std::cout << "\nThis stone is pushed " << name(1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1)) << ":\n" << beta.write(pushable_stone) << std::endl;
-        pushable_stone.next_bit_in(BitBoard(*it)());
-      }
+      std::cout << std::endl << *it << std::endl;
       ++it;
     }
 #if 0
@@ -85,5 +71,4 @@ int main(){
   catch(std::exception const& error) {
     std::cerr << "EXCEPTION!" << std::endl;
   }
-  std::cout << "Leaving main()" << std::endl;
 }
