@@ -93,6 +93,17 @@ BitBoard Board::pushable(int direction) const
   return m_reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
 }
 
+void Board::move(Index stone, int direction)
+{
+  direction -= direction & (direction -1); // Only one bit may be set.
+  if(pushable(direction).test(stone))
+  {
+    m_stones.toggle(stone);
+    m_stones |= BitBoard(stone).spread(direction);
+    reachable(stone);
+  }
+}
+
 void Board::read(BoardString const& inputstring)
 {
   reset();

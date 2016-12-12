@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <list>
 
 int main(){
   std::string setup_a = //test setup for error throwing but does not throw errors, not solvable
@@ -45,18 +46,29 @@ int main(){
   try {
     using namespace directions;
     Board beta(setup_d);
-    for (int direction = right; direction <= up; direction += 1)
+
+    std::list<BitBoard> boardlist;
+    for (int direction = right; direction <= up; direction <<= 1)
+      boardlist.push_back(beta.pushable(direction));
+
+    std::list<BitBoard>::const_iterator it;
+    it = boardlist.begin();
+      std::cout << "go 1" << std::endl;
+    while (it != boardlist.end())
     {
-      BitBoard const pushables(beta.pushable(direction));
+      std::cout << "go 2" << std::endl;
       Index pushable_stone = index_pre_begin;
-      pushable_stone.next_bit_in(pushables());
+      pushable_stone.next_bit_in(BitBoard(*it)());
       while (pushable_stone != index_end)
       {
-        std::cout << "\nThis stone can be pushed " << name(direction) << ":\n" << beta.write(pushable_stone) << std::endl;
-        pushable_stone.next_bit_in(pushables());
+      std::cout << "go 4" << std::endl;
+        Board moved = beta;
+        moved.move(pushable_stone, 1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1));
+        std::cout << "\nThis stone is pushed " << name(1 << (std::distance(std::list<BitBoard>::const_iterator(boardlist.begin()), it) - 1)) << ":\n" << beta.write(pushable_stone) << std::endl;
+        pushable_stone.next_bit_in(BitBoard(*it)());
       }
+      ++it;
     }
-
 #if 0
     std::cout << "test: ";
     for (int i = 0; i <= 120; ++i)

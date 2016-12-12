@@ -16,7 +16,7 @@ namespace directions
     return ((direction >> 2) | (direction << 2)) & (right | down | left | up);
   }
 
-  inline char const* name(int direction)
+  inline std::string const name(int direction)
   {
     std::string names;
     if ((direction & right))
@@ -28,7 +28,7 @@ namespace directions
     if ((direction & up))
       names.append(" and up");
     names = names.substr(5);
-    return names.c_str();
+    return names;
   }
 } // namespace directions
 
