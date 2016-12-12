@@ -16,7 +16,7 @@ namespace directions
     return ((direction >> 2) | (direction << 2)) & (right | down | left | up);
   }
 
-  inline std::string const name(int direction)
+  inline std::string name(int direction)
   {
     std::string names;
     if ((direction & right))
