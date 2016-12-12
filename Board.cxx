@@ -74,9 +74,14 @@ std::string Board::write(BitBoard const& colors) const
 
 void Board::reachable(Index start)
 {
+  reachable(BitBoard(start));
+}
+
+void Board::reachable(BitBoard start)
+{
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  m_reachables = BitBoard(start);
-  BitBoard previous(0);
+  m_reachables = start;
+  BitBoard previous;
   do
   {
     previous = m_reachables;
@@ -97,16 +102,23 @@ void Board::move(Index stone, int direction)
   direction -= direction & (direction -1); // Only one bit may be set.
   if(pushable(direction).test(stone))
   {
-    m_stones.toggle(stone);
-    m_stones |= (BitBoard(stone).spread(direction));
-    reachable(stone);
+    m_stones.reset(stone);
+    BitBoard temp = BitBoard(stone).spread(direction);
+    m_stones |= temp;
+    if ((temp & m_reachables))
+      reachable(stone);
+    else
+    {
+      m_reachables.set(stone);
+      reachable(m_reachables);
+    }
   }
 }
 
 std::list<Board> Board::get_moves() const
 {
   std::list<Board> boardlist;
-  for (int direction = right; direction <= up; direction <<= 1)
+  for (int direction = 1; direction <= 15; direction <<= 1)
   {
     BitBoard pushables = pushable(direction);
     Index pushable_stone = index_pre_begin;
