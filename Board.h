@@ -27,6 +27,7 @@ class Board {
     bool win() const;
     void read(BoardString const&);
     bool sane() const;
+    bool deadstones() const;
 
     BitBoard getreachables() const;
 

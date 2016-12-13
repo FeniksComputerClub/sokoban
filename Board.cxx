@@ -35,7 +35,7 @@ std::string Board::write(BitBoard const& colors) const
   bool isplayerset = false;
   for (Index i = index_begin; i < index_end; ++i)
   {
-    if (i() > 0 && i() % 8 == 0)
+    if (i > index_begin && i() % 8 == 0)
       outputstring += '\n';
 
     bool iscolorset = colors.test(i);
@@ -139,7 +139,7 @@ bool Board::win() const
 {
   if (m_stones != m_targets)
     return false;
-  std::cout << "gg" << std::endl;
+  std::cout << "you win!" << *this << std::endl;
   return true;
 }
 
@@ -196,10 +196,21 @@ bool Board::sane() const
     errorstring.append("Surrounding walls are missing! (should never occur)\n");
   if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
     errorstring.append("Another object is inside a wall! (should never occur)\n");
+  if (deadstones())
+    errorstring.append("Some stones in input can never be moved!\n");
 
   if(errorstring == "")
     return true;
   std::cout << "error: " << errorstring;
+  return false;
+}
+
+bool Board::deadstones() const
+{
+  BitBoard deadstones = m_stones & ~m_walls.spread(right | left) & ~m_walls.spread(down | up);
+  deadstones &= ~deadstones.spread(right | left) & ~deadstones.spread(down | up);
+  if(deadstones)
+    return true;
   return false;
 }
 

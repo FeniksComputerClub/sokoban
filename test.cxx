@@ -15,7 +15,7 @@ bool itstimetostop(int whentostop){
 
 
 int main(){
-  std::string setup_a = //test setup for error throwing but does not throw errors, not solvable
+  std::string setup_a = //test setup for error throwing but does not throw errors, not loadable
     "########"
     "#--@-  -"
     "#**$-.--"
@@ -24,7 +24,7 @@ int main(){
     "# --  .."
     "#LOL$..."
     "########";
-  std::string setup_b = //test setup for error throwing but throws as many errors as possible, not printable
+  std::string setup_b = //test setup for error throwing but throws as many errors as possible, not loadable
     ".#######"
     "#--@-++-"
     "#**$-.--"
@@ -33,7 +33,7 @@ int main(){
     "#+--  --"
     "#LOL$---"
     ".#######";
-  std::string setup_c = //test setup for reachable calculation, not solvable
+  std::string setup_c = //test setup for reachable calculation, not loadable
     "########"
     "#-------"
     "#######-"
@@ -42,7 +42,7 @@ int main(){
     "#-#-###-"
     "#-------"
     "########";
-  std::string setup_d = //test setup for pushable calculation, not solvable
+  std::string setup_d = //test setup for pushable calculation, not loadable
     "########"
     "#@----$-"
     "###$#---"
@@ -60,10 +60,19 @@ int main(){
     "########"
     "########"
     "########";
+  std::string setup_f = //puzzle I found online test setup for solving, solvable in 15 moves
+    "########"
+    "###   ##"
+    "### #   "
+    "#    $$@"
+    "# # ## #"
+    "# . .  #"
+    "##   ###"
+    "########";
 
   try {
     using namespace directions;
-    Board beta(setup_d);
+    Board beta(setup_c);
 
     std::list<std::list<Board>> iterationlist;
             std::cout << "go -1" << std::endl;
@@ -73,7 +82,8 @@ int main(){
 
     bool win = false;
             std::cout << "go 0" << std::endl;
-    int repeatamount = 10;
+    int repeatamount = 16;
+    int moveamount = 100000;
     for (int repeat = 0; repeat <= repeatamount; ++repeat)
     {
 std::cout << "go 1 each board in current iteration list, repeats left: " << (repeat - repeatamount) << std::endl;
@@ -84,21 +94,21 @@ std::cout << "go 1 each board in current iteration list, repeats left: " << (rep
       currentit = currentlist.begin();
       while (currentit != currentlist.end())
       {
-std::cout << "go 2 each board in current's moves list" << std::endl;
+//std::cout << "go 2 each board in current's moves list" << std::endl;
         std::list<Board> boardlist;
         boardlist = Board(*currentit).get_moves();
-        if (boardlist.empty())
-          currentlist.erase(currentit);
+        //if (boardlist.empty())
+        //  currentlist.erase(currentit);
         std::list<Board>::const_iterator boardit;
         boardit = boardlist.begin();
         while (boardit != boardlist.end())
         {
-std::cout << "go 3 a board in current's moves list" << std::endl;
-          std::cout << std::endl << *boardit << std::endl;
+//std::cout << "go 3 a board in current's moves list" << std::endl;
+          //std::cout << std::endl << *boardit << std::endl;
           win = Board(*boardit).win();
           if (win)
             break;
-          win = itstimetostop(10000);
+          win = itstimetostop(moveamount);
           if (win)
             break;
           nextlist.push_back(*boardit);
