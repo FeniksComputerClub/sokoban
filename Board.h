@@ -8,9 +8,6 @@
 typedef std::string BoardString;
 
 class Board {
-    typedef cwchess::mask_t mask_t;
-    enum directions { horizontal = 0, vertical = 1 };
-
   private:
     BitBoard m_walls;
     BitBoard m_stones;
