@@ -135,6 +135,14 @@ std::list<Board> Board::get_moves() const
   return boardlist;
 }
 
+bool Board::win() const
+{
+  if (m_stones != m_targets)
+    return false;
+  std::cout << "gg" << std::endl;
+  return true;
+}
+
 void Board::read(BoardString const& inputstring)
 {
   reset();
