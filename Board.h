@@ -21,6 +21,7 @@ class Board {
     Board();
     Board(std::string const&);
 
+    void reset();
     std::string write(BitBoard const& colors = BitBoard(0)) const;
     BitBoard pushable(int direction) const;
     std::list<Board> get_moves() const;
@@ -33,7 +34,6 @@ class Board {
     friend std::istream& operator>>(std::istream& is, Board& board);
     
   private:
-    void reset();
     void reachable(Index start);
     void reachable(BitBoard start);
     void move(Index stone, int direction);
