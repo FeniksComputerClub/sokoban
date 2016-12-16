@@ -28,8 +28,8 @@ int main(){
     ".#######"
     "#--@-++-"
     "#**$-.--"
-    "#-#####$"
-    "#-@--$$$"
+    "#-#### $"
+    "#-@--$#$"
     "#+--  --"
     "#LOL$---"
     ".#######";
@@ -69,10 +69,19 @@ int main(){
     "# . .  #"
     "##   ###"
     "########";
+  std::string setup_g = //test setup for error throwing deadstones error, not loadable
+    ".#######"
+    "#@@@@@@ "
+    "#      $"
+    "# $    $"
+    "# $$  $$"
+    "## $$  $"
+    "#$# #  $"
+    ".#######";
 
   try {
     using namespace directions;
-    Board beta(setup_c);
+    Board beta(setup_g);
 
     std::list<std::list<Board>> iterationlist;
             std::cout << "go -1" << std::endl;
@@ -95,8 +104,7 @@ std::cout << "go 1 each board in current iteration list, repeats left: " << (rep
       while (currentit != currentlist.end())
       {
 //std::cout << "go 2 each board in current's moves list" << std::endl;
-        std::list<Board> boardlist;
-        boardlist = Board(*currentit).get_moves();
+        std::list<Board> boardlist = Board(*currentit).get_moves();
         //if (boardlist.empty())
         //  currentlist.erase(currentit);
         std::list<Board>::const_iterator boardit;

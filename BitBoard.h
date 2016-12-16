@@ -112,6 +112,20 @@ class BitBoard : public cwchess::BitBoard {
         result |= original >> 1;
       if ((direction & up))
         result |= original >> 8;
-      return result & ~original;
+      return result;
+    }
+
+    BitBoard flowthrough(BitBoard const& space) const
+    {
+      using namespace directions;
+      BitBoard input(*this);
+      BitBoard previous(empty);
+      do
+      {
+        previous = input;
+        input |= input.spread(left|right|up|down) & space;
+      }
+      while(input != previous);
+      return input;
     }
 };

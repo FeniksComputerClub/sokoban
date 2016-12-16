@@ -25,7 +25,7 @@ void Board::reset()
   m_reachables = empty;
 }
 
-std::string Board::write(BitBoard const& colors) const
+std::string Board::write(BitBoard const& colors, bool showreachables) const
 {
   static char const* const reset_color = "\e[0m";
   static char const* const marker_color = "\e[104m";
@@ -48,7 +48,7 @@ std::string Board::write(BitBoard const& colors) const
       outputstring += m_targets.test(i) ? '*' : '$';
     else if (m_reachables.test(i))
     {
-      if (!iscolorset)
+      if (showreachables && !iscolorset)
       {
         outputstring += reachable_color;
         iscolorset = true;
@@ -72,22 +72,9 @@ std::string Board::write(BitBoard const& colors) const
   return outputstring;
 }
 
-void Board::reachable(Index start)
+void Board::reachable(BitBoard const& start)
 {
-  reachable(BitBoard(start));
-}
-
-void Board::reachable(BitBoard start)
-{
-  BitBoard const not_obstructed = ~(m_walls | m_stones);
-  m_reachables = start;
-  BitBoard previous;
-  do
-  {
-    previous = m_reachables;
-    m_reachables |= m_reachables.spread(left|right|up|down) & not_obstructed;
-  }
-  while(m_reachables != previous);
+  m_reachables = start.flowthrough(~(m_walls | m_stones));
 }
 
 BitBoard Board::pushable(int direction) const
@@ -103,22 +90,20 @@ void Board::move(Index stone, int direction)
   if(pushable(direction).test(stone))
   {
     m_stones.reset(stone);
-    BitBoard temp = BitBoard(stone).spread(direction);
+    BitBoard boardstone = BitBoard(stone);
+    BitBoard temp = boardstone.spread(direction);
     m_stones |= temp;
     if ((temp & m_reachables))
       reachable(stone);
     else
-    {
-      m_reachables.set(stone);
-      reachable(m_reachables);
-    }
+      m_reachables |= boardstone.flowthrough(~(m_walls | m_stones | m_reachables));
   }
 }
 
 std::list<Board> Board::get_moves() const
 {
   std::list<Board> boardlist;
-  for (int direction = 1; direction <= 15; direction <<= 1)
+  for (int direction = 1; direction != 16; direction <<= 1)
   {
     BitBoard pushables = pushable(direction);
     Index pushable_stone = index_pre_begin;
@@ -173,45 +158,69 @@ void Board::read(BoardString const& inputstring)
     if (readchar == '.' || readchar == '*' || readchar == '+')
       m_targets.set(i);
   }
-  reachable(player);
+  reachable(BitBoard(player));
 
-  if (!sane() || manyplayers)
+  std::string errorstring;
+  if (!sane(errorstring) || manyplayers)
   {
+    errorstring.insert(0, "invalid input:\n");
     if (manyplayers)
-      std::cout << "error: There are multiple players in input!" << std::endl;
-    throw std::runtime_error("invalid input");
+      errorstring.append("error: There are multiple players in input!\n");
+    throw std::runtime_error(errorstring);
   }
 }
 
 bool Board::sane() const
 {
-  std::string errorstring;
-  if (m_reachables == empty)
-    errorstring.append("No player defined!\n");
-  if (m_targets == empty)
-    errorstring.append("There are no goals!\n");
-  if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
-    errorstring.append("The amount of stones is not equal to the amount of goals!\n");
-  if ((m_walls & default_walls) != default_walls)
-    errorstring.append("Surrounding walls are missing! (should never occur)\n");
-  if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
-    errorstring.append("Another object is inside a wall! (should never occur)\n");
-  if (deadstones())
-    errorstring.append("Some stones in input can never be moved!\n");
-
-  if(errorstring == "")
+  if(sanestring() == "")
     return true;
-  std::cout << "error: " << errorstring;
   return false;
 }
 
-bool Board::deadstones() const
+bool Board::sane(std::string& errorstring) const
 {
-  BitBoard deadstones = m_stones & ~m_walls.spread(right | left) & ~m_walls.spread(down | up);
-  deadstones &= ~deadstones.spread(right | left) & ~deadstones.spread(down | up);
-  if(deadstones)
+  errorstring = sanestring();
+  if(errorstring == "")
     return true;
   return false;
+}
+
+std::string Board::sanestring() const
+{
+  std::string errorstring;
+  if (m_reachables == empty)
+    errorstring.append("error: No player defined!\n");
+  if (m_targets == empty)
+    errorstring.append("error: There are no goals!\n");
+  if (__builtin_popcountll(m_stones()) != __builtin_popcountll(m_targets()))
+    errorstring.append("error: The amount of stones is not equal to the amount of goals!\n");
+  if ((m_walls & default_walls) != default_walls)
+    errorstring.append("error: Surrounding walls are missing! (should never occur)\n");
+  if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
+    errorstring.append("error: Another object is inside a wall! (should never occur)\n");
+  BitBoard const boarddeadstones(deadstones());
+  if (boarddeadstones)
+    errorstring.append("error: Some stones in input can never be moved!\n");
+  if ((m_reachables.flowthrough(~m_walls).spread(right | down | left | up) & (m_stones | m_targets)) != (m_stones | m_targets))
+    errorstring.append("error: Some stones or targets in input can never be reached!\n");
+  return errorstring;
+}
+
+BitBoard Board::deadstones() const
+{
+  BitBoard deadstones = m_stones;
+  BitBoard previous;
+  BitBoard obstructed;
+  while (deadstones != previous)
+  {
+    previous = deadstones;
+    obstructed = m_walls | deadstones;
+    deadstones &= obstructed.spread(right | left) & obstructed.spread(down | up);
+  }
+  return deadstones;
+#if 0
+  return m_stones & (m_walls.spread(right | left)) & m_walls.spread(down | up); //a simpler check that doesn't take stones into acoount
+#endif
 }
 
 BitBoard Board::getreachables() const {return m_reachables;}
