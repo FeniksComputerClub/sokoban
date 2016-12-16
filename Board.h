@@ -18,7 +18,7 @@ class Board {
     BitBoard m_reachables;
 
   public:
-    Board(); 
+    Board();
     Board(std::string const&);
 
     std::string write(BitBoard const& colors = BitBoard(0), bool showreachables = true) const;
