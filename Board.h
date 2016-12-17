@@ -34,6 +34,7 @@ class Board {
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);
+    friend bool operator<(Board const& b1, Board const& b2) { return b1.m_stones() < b2.m_stones(); }
     
   private:
     void reset();
