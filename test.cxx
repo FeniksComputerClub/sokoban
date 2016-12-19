@@ -6,17 +6,6 @@
 #include <set>
 #include <vector>
 
-#if 0
-int timetostop = 0;
-bool itstimetostop(int whentostop){
-  ++timetostop;
-  std::cout << "moves left: " << timetostop - whentostop << std::endl;
-  if(timetostop >= whentostop)
-    return true;
-  return false;
-}
-#endif
-
 
 int main(){
   std::string setup_a = //test setup for error throwing but does not throw errors, not loadable
@@ -113,20 +102,18 @@ int main(){
       new_boards = next_boards;
     }
     while(!new_boards.empty());
+
 #if 0
     using namespace directions;
-    Board beta(setup_g);
+    Board beta(setup_f);
 
     std::list<std::list<Board>> iterationlist;
-            std::cout << "go -1" << std::endl;
     std::list<Board> inputlist;
     inputlist.push_back(beta);
     iterationlist.push_back(inputlist);
 
     bool win = false;
-            std::cout << "go 0" << std::endl;
     int repeatamount = 16;
-    int moveamount = 100000;
     for (int repeat = 0; repeat <= repeatamount; ++repeat)
     {
 std::cout << "go 1 each board in current iteration list, repeats left: " << (repeat - repeatamount) << std::endl;
@@ -148,9 +135,6 @@ std::cout << "go 1 each board in current iteration list, repeats left: " << (rep
 //std::cout << "go 3 a board in current's moves list" << std::endl;
           //std::cout << std::endl << *boardit << std::endl;
           win = Board(*boardit).win();
-          if (win)
-            break;
-          win = itstimetostop(moveamount);
           if (win)
             break;
           nextlist.push_back(*boardit);
