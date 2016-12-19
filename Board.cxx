@@ -244,5 +244,5 @@ std::istream& operator>>(std::istream& inputstream, Board& board)
 
 bool operator<(Board const& b1, Board const& b2)
 {
-  return b1.m_stones() < b2.m_stones();
+  return b1.m_stones() < b2.m_stones() && b1.m_reachables() < b2.m_reachables();
 }

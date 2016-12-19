@@ -385,7 +385,7 @@ class Index : protected IndexData {
       };
       conversion tmp;
       tmp.mask = mask;
-      uint32_t indx;
+      uint32_t indx = 0;
       if (tmp.low)
       {
 	__asm__ __volatile__(

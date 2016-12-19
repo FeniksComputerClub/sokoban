@@ -6,7 +6,6 @@
 #include <set>
 #include <vector>
 
-
 int main(){
   std::string setup_a = //test setup for error throwing but does not throw errors, not loadable
     "########"
@@ -78,13 +77,13 @@ int main(){
     // Start with just the initial problem setup.
     all_boards.insert(setup_f);
 
+
     // Store new boards that we didn't see before in new_boards.
     std::vector<std::set<Board>::iterator> new_boards;
     new_boards.push_back(all_boards.begin());           // Fill it with the initial problem.
 
     do
     {
-// ... stuff here
       // Run over all new boards, generate moves and put new moves in next_boards.
       std::vector<std::set<Board>::iterator> next_boards;
       for (std::set<Board>::iterator new_board : new_boards)
@@ -102,58 +101,6 @@ int main(){
       new_boards = next_boards;
     }
     while(!new_boards.empty());
-
-#if 0
-    using namespace directions;
-    Board beta(setup_f);
-
-    std::list<std::list<Board>> iterationlist;
-    std::list<Board> inputlist;
-    inputlist.push_back(beta);
-    iterationlist.push_back(inputlist);
-
-    bool win = false;
-    int repeatamount = 16;
-    for (int repeat = 0; repeat <= repeatamount; ++repeat)
-    {
-std::cout << "go 1 each board in current iteration list, repeats left: " << (repeat - repeatamount) << std::endl;
-      std::list<Board> nextlist;
-
-      std::list<Board> currentlist = iterationlist.back();
-      std::list<Board>::const_iterator currentit;
-      currentit = currentlist.begin();
-      while (currentit != currentlist.end())
-      {
-//std::cout << "go 2 each board in current's moves list" << std::endl;
-        std::list<Board> boardlist = Board(*currentit).get_moves();
-        //if (boardlist.empty())
-        //  currentlist.erase(currentit);
-        std::list<Board>::const_iterator boardit;
-        boardit = boardlist.begin();
-        while (boardit != boardlist.end())
-        {
-//std::cout << "go 3 a board in current's moves list" << std::endl;
-          //std::cout << std::endl << *boardit << std::endl;
-          win = Board(*boardit).win();
-          if (win)
-            break;
-          nextlist.push_back(*boardit);
-          ++boardit;
-        }
-        if (win)
-          break;
-        ++currentit;
-      }
-      if (win)
-        break;
-      iterationlist.push_back(nextlist);
-    }
-//#if 0
-    std::cout << "test: ";
-    for (int i = 0; i <= 120; ++i)
-      std::cout << "\e[" << i << "m-" << i << "-" << "\e[0m";
-    std::cout << std::endl;
-#endif
   }
   catch(std::runtime_error const& error) {
     std::cout << "runtime error: " << error.what() << std::endl;
