@@ -3,7 +3,10 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <list>
+#include <set>
+#include <vector>
+
+#if 0
 int timetostop = 0;
 bool itstimetostop(int whentostop){
   ++timetostop;
@@ -12,6 +15,7 @@ bool itstimetostop(int whentostop){
     return true;
   return false;
 }
+#endif
 
 
 int main(){
@@ -75,11 +79,41 @@ int main(){
     "#      $"
     "# $    $"
     "# $$  $$"
-    "## $$  $"
-    "#$# #  $"
+    "#$ $$  $"
+    "#$$ #  $"
     ".#######";
 
   try {
+    // Store all possible boards in all_boards.
+    std::set<Board> all_boards;
+    // Start with just the initial problem setup.
+    all_boards.insert(setup_f);
+
+    // Store new boards that we didn't see before in new_boards.
+    std::vector<std::set<Board>::iterator> new_boards;
+    new_boards.push_back(all_boards.begin());           // Fill it with the initial problem.
+
+    do
+    {
+// ... stuff here
+      // Run over all new boards, generate moves and put new moves in next_boards.
+      std::vector<std::set<Board>::iterator> next_boards;
+      for (std::set<Board>::iterator new_board : new_boards)
+      {
+        std::cout << "New board:\n" << *new_board << std::endl;
+        for (Board move : new_board->get_moves())
+        {
+          std::cout << "Move:\n" << move << std::endl;
+
+          auto result = all_boards.insert(move);
+          if (result.second)
+            next_boards.push_back(result.first);
+        }
+      }
+      new_boards = next_boards;
+    }
+    while(!new_boards.empty());
+#if 0
     using namespace directions;
     Board beta(setup_g);
 
@@ -130,7 +164,7 @@ std::cout << "go 1 each board in current iteration list, repeats left: " << (rep
         break;
       iterationlist.push_back(nextlist);
     }
-#if 0
+//#if 0
     std::cout << "test: ";
     for (int i = 0; i <= 120; ++i)
       std::cout << "\e[" << i << "m-" << i << "-" << "\e[0m";

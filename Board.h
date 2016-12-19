@@ -28,12 +28,13 @@ class Board {
     void read(BoardString const&);
     bool sane() const;
     bool sane(std::string& errorstring) const;
-    BitBoard deadstones() const;
+    BitBoard deadstone() const;
 
     BitBoard getreachables() const;
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);
+    friend bool operator<(Board const& b1, Board const& b2);
     
   private:
     void reset();

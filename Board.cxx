@@ -198,15 +198,15 @@ std::string Board::sanestring() const
     errorstring.append("error: Surrounding walls are missing! (should never occur)\n");
   if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
     errorstring.append("error: Another object is inside a wall! (should never occur)\n");
-  BitBoard const boarddeadstones(deadstones());
-  if (boarddeadstones)
+  BitBoard const deadstones(deadstone());
+  if (deadstones)
     errorstring.append("error: Some stones in input can never be moved!\n");
-  if ((m_reachables.flowthrough(~m_walls).spread(right | down | left | up) & (m_stones | m_targets)) != (m_stones | m_targets))
+  if ((m_reachables.flowthrough(~(m_walls | deadstones)).spread(right | down | left | up) & (m_stones | m_targets)) != (m_stones | m_targets))
     errorstring.append("error: Some stones or targets in input can never be reached!\n");
   return errorstring;
 }
 
-BitBoard Board::deadstones() const
+BitBoard Board::deadstone() const
 {
   BitBoard deadstones = m_stones;
   BitBoard previous;
@@ -240,4 +240,9 @@ std::istream& operator>>(std::istream& inputstream, Board& board)
   inputstring.assign(getchars);
   board.read(inputstring);
   return inputstream;
+}
+
+bool operator<(Board const& b1, Board const& b2)
+{
+  return b1.m_stones() < b2.m_stones();
 }
