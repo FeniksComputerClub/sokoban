@@ -1,6 +1,7 @@
 #pragma once
 
 #include "cwchess/BitBoard.h"
+#include "Index.h"
 #include <string>
 
 namespace directions
@@ -31,11 +32,6 @@ namespace directions
     return names;
   }
 } // namespace directions
-
-using cwchess::Index;
-using cwchess::index_end;
-using cwchess::index_begin;
-using cwchess::index_pre_begin;
 
 // POD constants.
 cwchess::BitBoardData const empty = { CW_MASK_T_CONST(0x0) };
@@ -112,6 +108,20 @@ class BitBoard : public cwchess::BitBoard {
         result |= original >> 1;
       if ((direction & up))
         result |= original >> 8;
-      return result & ~original;
+      return result;
+    }
+
+    BitBoard flowthrough(BitBoard const& space) const
+    {
+      using namespace directions;
+      BitBoard input(*this);
+      BitBoard previous(empty);
+      do
+      {
+        previous = input;
+        input |= input.spread(left|right|up|down) & space;
+      }
+      while(input != previous);
+      return input;
     }
 };
