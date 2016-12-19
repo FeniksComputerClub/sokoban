@@ -16,7 +16,7 @@ class Board {
 
   public:
     Board();
-    Board(std::string const&);
+    Board(BoardString const&);
 
     std::string write(BitBoard const& colors = BitBoard(0), bool showreachables = true) const;
     BitBoard pushable(int direction) const;

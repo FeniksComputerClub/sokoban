@@ -73,7 +73,7 @@ int main(){
 
   try {
     // Store all possible boards in all_boards.
-    std::set<Board> all_boards;
+    std::map<Board, int> all_boards;
     // Start with just the initial problem setup.
     all_boards.insert(setup_f);
 
