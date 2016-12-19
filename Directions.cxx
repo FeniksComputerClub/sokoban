@@ -78,36 +78,8 @@ std::string name() const
   return names;
 }
 
-int operator()()
-{
-  return Directions.get();
-}
-
 std::ostream& operator<<(std::ostream& outputstream, Directions const& input)
 {
   outputstream << input.name();
   return outputstream;
-}
-
-bool operator<(Directions const& left, Directions const& right)
-{
-  return left.get() < right.get();
-}
-
-Directions& operator|=(int input)
-{
-  Directions.get() | input;
-  return *this;
-}
-
-Directions& operator&=(int input)
-{
-  Directions.get() & input;
-  return *this;
-}
-
-Directions& operator^=(int input)
-{
-  Directions.get() ^ input;
-  return *this;
 }

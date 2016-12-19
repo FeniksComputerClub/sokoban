@@ -6,12 +6,12 @@
 
 class Directions {
   private:
-    int const right_pos;
-    int const down_pos;
-    int const left_pos = 4;
-    int const up_pos = 8;
-    int const max_pos = right_pos | down_pos | left_pos | up_pos;
-    int const reverse_pos = 2;
+    static int const right_pos = 1;
+    static int const down_pos = 2;
+    static int const left_pos = 4;
+    static int const up_pos = 8;
+    static int const max_pos = right_pos | down_pos | left_pos | up_pos;
+    static int const reverse_pos = 2;
 
     bool m_right;
     bool m_down;
@@ -27,9 +27,11 @@ class Directions {
     Directions reverse() const;
     std::string name() const;
 
-    friend int operator()();
+    int operator()() { return get(); };
+    Directions& operator|=(int input) { set(get() | input); return *this; };
+    Directions& operator&=(int input) { set(get() & input); return *this; };
+    Directions& operator^=(int input) { set(get() ^ input); return *this; };
+    
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
-    friend bool operator<(Directions const& left, Directions const& right);
-    friend Directions& operator|=(int input);
-    friend Directions& operator&=(int input);
-    friend Directions& operator^=(int input);
+    friend bool operator<(Directions const& left, Directions const& right) { return left.get() < right.get(); };
+};
