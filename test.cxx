@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <set>
 #include <vector>
+#include <map>
 
 int main(){
   std::string setup_a = //test setup for error throwing but does not throw errors, not loadable
@@ -73,32 +74,35 @@ int main(){
 
   try {
     // Store all possible boards in all_boards.
-    std::map<Board, int> all_boards;
+    typedef std::map<Board, int> all_boards_type;
+    all_boards_type all_boards;
     // Start with just the initial problem setup.
-    all_boards.insert(setup_f);
-
+    all_boards.emplace(setup_f, 0);
 
     // Store new boards that we didn't see before in new_boards.
-    std::vector<std::set<Board>::iterator> new_boards;
+    std::vector<all_boards_type::iterator> new_boards;
     new_boards.push_back(all_boards.begin());           // Fill it with the initial problem.
 
+    int count = 1;
     do
     {
       // Run over all new boards, generate moves and put new moves in next_boards.
-      std::vector<std::set<Board>::iterator> next_boards;
-      for (std::set<Board>::iterator new_board : new_boards)
+      typedef std::vector<all_boards_type::iterator> next_boards_type;
+      next_boards_type next_boards;
+      for (next_boards_type::value_type new_board : new_boards)
       {
-        std::cout << "New board:\n" << *new_board << std::endl;
-        for (Board move : new_board->get_moves())
+        std::cout << "New board (at move " << new_board->second << "):\n" << new_board->first << std::endl;
+        for (Board move : new_board->first.get_moves())
         {
           std::cout << "Move:\n" << move << std::endl;
 
-          auto result = all_boards.insert(move);
+          auto result = all_boards.insert(all_boards_type::value_type(move, count));
           if (result.second)
             next_boards.push_back(result.first);
         }
       }
       new_boards = next_boards;
+      ++count;
     }
     while(!new_boards.empty());
   }
