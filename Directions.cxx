@@ -1,18 +1,7 @@
 #include "sys.h"
+#include "Directions.h"
 #include <iostream>
 #include <string>
-
-int const right_pos = 1;
-int const down_pos = 2;
-int const left_pos = 4;
-int const up_pos = 8;
-int const max_pos = right_pos | down_pos | left_pos | up_pos;
-int const reverse_pos = 2;
-
-bool m_right;
-bool m_down;
-bool m_left;
-bool m_up;
 
 Directions::Directions()
 {
@@ -69,7 +58,7 @@ int Directions::get() const
   return output;
 }
 
-Direction reverse() const
+Directions reverse() const
 {
   return ((get() >> reverse_pos) | (get() << reverse_pos)) & (max_pos);
 }
