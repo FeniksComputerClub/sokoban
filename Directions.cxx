@@ -94,13 +94,13 @@ int operator()()
   return Directions.get();
 }
 
-std::ostream& operator<<(std::ostream& outputstream, Directions const& Directions) const
+std::ostream& operator<<(std::ostream& outputstream, Directions const& input)
 {
-  outputstream << Directions.name();
+  outputstream << input.name();
   return outputstream;
 }
 
-bool operator<(Directions const& left, Directions const& right) const
+bool operator<(Directions const& left, Directions const& right)
 {
   return left.get() < right.get();
 }
