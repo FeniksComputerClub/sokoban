@@ -5,7 +5,6 @@
 #include <sstream>
 #include <stdexcept>
 
-using namespace directions;
 
 Board::Board()
 {
@@ -77,16 +76,14 @@ void Board::reachable(BitBoard const& start)
   m_reachables = start.flowthrough(~(m_walls | m_stones));
 }
 
-BitBoard Board::pushable(int direction) const
+BitBoard Board::pushable(Directions direction) const
 {
-  direction -= direction & (direction -1); // Only one bit may be set.
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  return m_reachables.spread(direction) & m_stones & not_obstructed.spread(reverse(direction));
+  return m_reachables.spread(direction) & m_stones & not_obstructed.spread(~direction);
 }
 
-void Board::move(Index stone, int direction)
+void Board::move(Index stone, Directions direction)
 {
-  direction -= direction & (direction -1); // Only one bit may be set.
   if(pushable(direction).test(stone))
   {
     m_stones.reset(stone);
@@ -103,7 +100,8 @@ void Board::move(Index stone, int direction)
 std::list<Board> Board::get_moves() const
 {
   std::list<Board> boardlist;
-  for (int direction = 1; direction != 16; direction <<= 1)
+  Directions direction = Directions();
+  while (direction.next())
   {
     BitBoard pushables = pushable(direction);
     Index pushable_stone = index_pre_begin;
@@ -120,11 +118,11 @@ std::list<Board> Board::get_moves() const
   return boardlist;
 }
 
-bool Board::win() const
+bool Board::solved() const
 {
   if (m_stones != m_targets)
     return false;
-  std::cout << "you win!" << *this << std::endl;
+  std::cout << "you won!" << *this << std::endl;
   return true;
 }
 
@@ -201,7 +199,7 @@ std::string Board::sanestring() const
   BitBoard const deadstones(deadstone());
   if (deadstones)
     errorstring.append("error: Some stones in input can never be moved!\n");
-  if ((m_reachables.flowthrough(~(m_walls | deadstones)).spread(right | down | left | up) & (m_stones | m_targets)) != (m_stones | m_targets))
+  if ((m_reachables.flowthrough(~(m_walls | deadstones)).spread(Directions(1, 1, 1, 1)) & (m_stones | m_targets)) != (m_stones | m_targets))
     errorstring.append("error: Some stones or targets in input can never be reached!\n");
   return errorstring;
 }
@@ -215,11 +213,11 @@ BitBoard Board::deadstone() const
   {
     previous = deadstones;
     obstructed = m_walls | deadstones;
-    deadstones &= obstructed.spread(right | left) & obstructed.spread(down | up);
+    deadstones &= obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
   }
   return deadstones;
 #if 0
-  return m_stones & (m_walls.spread(right | left)) & m_walls.spread(down | up); //a simpler check that doesn't take stones into acoount
+  return m_stones & (m_walls.spread(Directions(1, 0, 1, 0))) & m_walls.spread(Directions(0, 1, 0, 1)); //a simpler check that doesn't take stones into acoount
 #endif
 }
 

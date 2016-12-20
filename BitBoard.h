@@ -2,36 +2,9 @@
 
 #include "cwchess/BitBoard.h"
 #include "Index.h"
+#include "Directions.h"
 #include <string>
 
-namespace directions
-{
-  int const right = 1;
-  int const down = 2;
-  int const left = 4;
-  int const up = 8;
-
-  inline int reverse(int direction)
-  {
-    // Swap left/right and up/down bits.
-    return ((direction >> 2) | (direction << 2)) & (right | down | left | up);
-  }
-
-  inline std::string name(int direction)
-  {
-    std::string names;
-    if ((direction & right))
-      names.append(" and right");
-    if ((direction & down))
-      names.append(" and down");
-    if ((direction & left))
-      names.append(" and left");
-    if ((direction & up))
-      names.append(" and up");
-    names = names.substr(5);
-    return names;
-  }
-} // namespace directions
 
 // POD constants.
 cwchess::BitBoardData const empty = { CW_MASK_T_CONST(0x0) };
@@ -95,31 +68,29 @@ class BitBoard : public cwchess::BitBoard {
     friend BitBoard operator<<(BitBoard const& bitboard, int bits) { BitBoard result(bitboard); result <<= bits; return result; }
     friend BitBoard operator>>(BitBoard const& bitboard, int bits) { BitBoard result(bitboard); result >>= bits; return result; }
 
-    BitBoard spread(int direction) const
+    BitBoard spread(Directions direction) const
     {
-      using namespace directions;
       BitBoard const original(*this);
       BitBoard result(empty);
-      if ((direction & right))
+      if (direction.right())
         result |= original << 1;
-      if ((direction & down))
+      if (direction.down())
         result |= original << 8;
-      if ((direction & left))
+      if (direction.left())
         result |= original >> 1;
-      if ((direction & up))
+      if (direction.up())
         result |= original >> 8;
       return result;
     }
 
     BitBoard flowthrough(BitBoard const& space) const
     {
-      using namespace directions;
       BitBoard input(*this);
       BitBoard previous(empty);
       do
       {
         previous = input;
-        input |= input.spread(left|right|up|down) & space;
+        input |= input.spread(Directions(1, 1, 1, 1)) & space;
       }
       while(input != previous);
       return input;

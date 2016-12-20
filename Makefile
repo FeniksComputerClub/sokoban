@@ -30,7 +30,7 @@ endif
 
 # Executables.
 
-test: test.o Board.o
+test: test.o Board.o Directions.o
 	$(CXX) $(CXXFLAGS) $^ -o $@
 
 # Other targets

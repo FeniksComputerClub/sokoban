@@ -20,9 +20,9 @@ class Board {
     Board(std::string const&);
 
     std::string write(BitBoard const& colors = BitBoard(0), bool showreachables = true) const;
-    BitBoard pushable(int direction) const;
+    BitBoard pushable(Directions direction) const;
     std::list<Board> get_moves() const;
-    bool win() const;
+    bool solved() const;
     void read(BoardString const&);
     bool sane() const;
     bool sane(std::string& errorstring) const;
@@ -37,6 +37,6 @@ class Board {
   private:
     void reset();
     void reachable(BitBoard const& start);
-    void move(Index stone, int direction);
+    void move(Index stone, Directions direction);
     std::string sanestring() const;
 };

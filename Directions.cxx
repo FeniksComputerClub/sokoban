@@ -13,6 +13,11 @@ Directions::Directions(int input)
   set(input);
 }
 
+Directions::Directions(bool right, bool down, bool left, bool up)
+{
+  set(right, down, left, up);
+}
+
 void Directions::reset()
 {
   m_right = false;
@@ -27,26 +32,34 @@ void Directions::set(int input)
     m_right = true;
   else
     m_right = false;
-  
+
   if (input & down_pos)
     m_down = true;
   else
     m_down = false;
-  
+
   if (input & left_pos)
     m_left = true;
   else
     m_left = false;
-  
+
   if (input & up_pos)
     m_up = true;
   else
     m_up = false;
 }
 
+void Directions::set(bool right, bool down, bool left, bool up)
+{
+  m_right = right;
+  m_down = down;
+  m_left = left;
+  m_up = up;
+}
+
 int Directions::get() const
 {
-  int output;
+  int output = 0;
   if (m_right)
     output &= right_pos;
   if (m_down)
@@ -58,12 +71,33 @@ int Directions::get() const
   return output;
 }
 
-Directions reverse() const
+void Directions::reverse()
 {
-  return ((get() >> reverse_pos) | (get() << reverse_pos)) & (max_pos);
+  std::swap(m_right, m_left);
+  std::swap(m_down, m_up);
 }
 
-std::string name() const
+bool Directions::next()
+{
+  if(!(m_right | m_down | m_left | m_up))
+    set(1, 0, 0, 0);
+  else if (m_right && !m_down)
+    std::swap(m_right, m_down);
+  else if (m_down && !m_left)
+    std::swap(m_down, m_left);
+  else if (m_left && !m_up)
+    std::swap(m_left, m_up);
+  else if (m_up && !m_right)
+  {
+    std::swap(m_up, m_right);
+    return false;
+  }
+  else
+    return false;
+  return true;
+}
+
+std::string Directions::name() const
 {
   std::string names;
   if (m_right)
@@ -74,7 +108,8 @@ std::string name() const
     names.append(" and left");
   if (m_up)
     names.append(" and up");
-  names = names.substr(5);
+  if (names.length())
+    names = names.substr(5);
   return names;
 }
 
