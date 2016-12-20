@@ -17,7 +17,7 @@ class Board {
 
   public:
     Board();
-    Board(std::string const&);
+    Board(BoardString const&);
 
     std::string write(BitBoard const& colors = BitBoard(0), bool showreachables = true) const;
     BitBoard pushable(Directions direction) const;
@@ -37,6 +37,10 @@ class Board {
   private:
     void reset();
     void reachable(BitBoard const& start);
+<<<<<<< HEAD
     void move(Index stone, Directions direction);
+=======
+    void move(Index stone, int direction);
+>>>>>>> master
     std::string sanestring() const;
 };

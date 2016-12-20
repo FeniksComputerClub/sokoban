@@ -34,7 +34,7 @@ std::string Board::write(BitBoard const& colors, bool showreachables) const
   bool isplayerset = false;
   for (Index i = index_begin; i < index_end; ++i)
   {
-    if (i() > 0 && i() % 8 == 0) // (cwchess::file_a.M_bitmask & index2mask(i)) first column test(i)
+    if (i > index_begin && i() % 8 == 0)
       outputstring += '\n';
 
     bool iscolorset = colors.test(i);
@@ -102,7 +102,6 @@ std::list<Board> Board::get_moves() const
   std::list<Board> boardlist;
   Directions direction = Directions();
   while (direction.next())
-  for (int direction = 1; direction <= 15; direction <<= 1) // loops once for each direction
   {
     BitBoard pushables = pushable(direction);
     Index pushable_stone = index_pre_begin;
