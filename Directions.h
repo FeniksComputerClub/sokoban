@@ -1,7 +1,5 @@
 #pragma once
 
-#include "sys.h"
-#include <iostream>
 #include <string>
 
 class Directions {
