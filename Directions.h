@@ -47,5 +47,5 @@ class Directions {
     friend Directions operator~(Directions const& input) { Directions output(input); output.reverse(); return output; }
     
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
-    friend bool operator<(Directions const& left, Directions const& right) { return left.get() < right.get(); };
+    friend bool operator<(Directions const& lh, Directions const& rh) { return lh.get() < rh.get(); }
 };
