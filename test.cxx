@@ -71,6 +71,15 @@ int main(){
     "#$ $$  $"
     "#$$ #  $"
     ".#######";
+  std::string setup_h = //another puzzle I found online test setup for solving, solvable in 10 moves
+    "########"
+    "########"
+    "#. $ .##"
+    "#.$$$@##"
+    "#. $ .##"
+    "########"
+    "########"
+    "########";
 
   try {
     // Store all possible boards in all_boards.
@@ -81,7 +90,7 @@ int main(){
     all_parents_type all_parents;
 
     // Start with just the initial problem setup.
-    all_boards.emplace(setup_f, 0);
+    all_boards.emplace(setup_h, 0);
 
     // Store new boards that we didn't see before in new_boards.
     std::vector<all_boards_type::iterator> new_boards;

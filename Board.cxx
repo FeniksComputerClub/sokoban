@@ -120,10 +120,7 @@ std::list<Board> Board::get_moves() const
 
 bool Board::solved() const
 {
-  if (m_stones != m_targets)
-    return false;
-  std::cout << "you won!" << *this << std::endl;
-  return true;
+  return m_stones == m_targets;
 }
 
 void Board::read(BoardString const& inputstring)
@@ -206,18 +203,13 @@ std::string Board::sanestring() const
 
 BitBoard Board::deadstone() const
 {
-  BitBoard deadstones = m_stones;
-  BitBoard previous;
-  BitBoard obstructed;
-  while (deadstones != previous)
-  {
-    previous = deadstones;
-    obstructed = m_walls | deadstones;
-    deadstones &= obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
-  }
+  BitBoard deadstones;
+  BitBoard obstructed = m_walls | m_stones;
+  while (deadstones = m_stones & obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1)))
+    obstructed ^= m_stones & ~deadstones;
   return deadstones;
 #if 0
-  return m_stones & (m_walls.spread(Directions(1, 0, 1, 0))) & m_walls.spread(Directions(0, 1, 0, 1)); //a simpler check that doesn't take stones into acoount
+  return m_stones & m_walls.spread(Directions(1, 0, 1, 0)) & m_walls.spread(Directions(0, 1, 0, 1)); //a simpler check that doesn't take stones into acoount
 #endif
 }
 

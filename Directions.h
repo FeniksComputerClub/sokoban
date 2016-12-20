@@ -39,6 +39,9 @@ class Directions {
 
     int operator()() { return get(); };
     
+    Directions operator|=(Directions input) { set(input.right() | right(), input.down() | down(), input.left() | left(), input.up() | up()); return *this; };
+    Directions operator&=(Directions input) { set(input.right() & right(), input.down() & down(), input.left() & left(), input.up() & up()); return *this; };
+    Directions operator^=(Directions input) { set(input.right() ^ right(), input.down() ^ down(), input.left() ^ left(), input.up() ^ up()); return *this; };
     friend Directions operator|(Directions input1, Directions input2) { return Directions(input1.right() | input2.right(), input1.down() | input2.down(), input1.left() | input2.left(), input1.up() | input2.up()); };
     friend Directions operator&(Directions input1, Directions input2) { return Directions(input1.right() & input2.right(), input1.down() & input2.down(), input1.left() & input2.left(), input1.up() & input2.up()); };
     friend Directions operator^(Directions input1, Directions input2) { return Directions(input1.right() ^ input2.right(), input1.down() ^ input2.down(), input1.left() ^ input2.left(), input1.up() ^ input2.up()); };
