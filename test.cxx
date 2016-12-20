@@ -105,7 +105,7 @@ int main(){
 	  {
             next_boards.push_back(result.first);
 	    all_parents.insert(all_parents_type::value_type(move, new_board));
-	    if (move.win())
+	    if (move.solved())
 	    {
 	      std::cout << "Solved in " << count << " moves:\n" << move << std::endl;
 	    }

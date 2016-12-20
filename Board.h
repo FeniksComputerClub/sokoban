@@ -37,10 +37,6 @@ class Board {
   private:
     void reset();
     void reachable(BitBoard const& start);
-<<<<<<< HEAD
     void move(Index stone, Directions direction);
-=======
-    void move(Index stone, int direction);
->>>>>>> master
     std::string sanestring() const;
 };
