@@ -28,25 +28,10 @@ void Directions::reset()
 
 void Directions::set(int input)
 {
-  if (input & right_pos)
-    m_right = true;
-  else
-    m_right = false;
-
-  if (input & down_pos)
-    m_down = true;
-  else
-    m_down = false;
-
-  if (input & left_pos)
-    m_left = true;
-  else
-    m_left = false;
-
-  if (input & up_pos)
-    m_up = true;
-  else
-    m_up = false;
+  m_right = input & right_pos;
+  m_down = input & down_pos;
+  m_left = input & left_pos;
+  m_up = input & up_pos;
 }
 
 void Directions::set(bool right, bool down, bool left, bool up)
