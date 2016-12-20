@@ -17,25 +17,16 @@ class Directions {
 
   public:
     Directions();
-    Directions(int input);
     Directions(bool right, bool down, bool left, bool up);
     void reset();
-    void right(bool set) { m_right = set; };
-    void down(bool set) { m_down = set; };
-    void left(bool set) { m_left = set; };
-    void up(bool set) { m_up = set; };
     bool right() const { return m_right; }; 
     bool down() const { return m_down; };
     bool left() const { return m_left; };
     bool up() const { return m_up; };
-    void set(int input);
     void set(bool right, bool down, bool left, bool up);
-    int get() const;
     void reverse();
     bool next();
     std::string name() const;
-
-    int operator()() { return get(); };
     
     Directions& operator|=(Directions const& input) { set(input.right() | right(), input.down() | down(), input.left() | left(), input.up() | up()); return *this; }
     Directions& operator&=(Directions const& input) { set(input.right() & right(), input.down() & down(), input.left() & left(), input.up() & up()); return *this; }
@@ -48,4 +39,7 @@ class Directions {
     
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
     friend bool operator<(Directions const& lh, Directions const& rh) { return lh.get() < rh.get(); }
+
+  private:
+    int get() const;
 };

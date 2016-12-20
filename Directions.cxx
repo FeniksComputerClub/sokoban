@@ -8,11 +8,6 @@ Directions::Directions()
   reset();
 }
 
-Directions::Directions(int input)
-{
-  set(input);
-}
-
 Directions::Directions(bool right, bool down, bool left, bool up)
 {
   set(right, down, left, up);
@@ -24,14 +19,6 @@ void Directions::reset()
   m_down = false;
   m_left = false;
   m_up = false;
-}
-
-void Directions::set(int input)
-{
-  m_right = input & right_pos;
-  m_down = input & down_pos;
-  m_left = input & left_pos;
-  m_up = input & up_pos;
 }
 
 void Directions::set(bool right, bool down, bool left, bool up)
