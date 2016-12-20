@@ -18,14 +18,16 @@ class Directions {
   public:
     Directions();
     Directions(bool right, bool down, bool left, bool up);
+
+    void set(bool right, bool down, bool left, bool up);
     void reset();
+    void reverse();
+    bool next();
+
     bool right() const { return m_right; }; 
     bool down() const { return m_down; };
     bool left() const { return m_left; };
     bool up() const { return m_up; };
-    void set(bool right, bool down, bool left, bool up);
-    void reverse();
-    bool next();
     std::string name() const;
     
     Directions& operator|=(Directions const& input) { set(input.right() | right(), input.down() | down(), input.left() | left(), input.up() | up()); return *this; }

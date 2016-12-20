@@ -1,6 +1,5 @@
 #include "sys.h"
 #include "Directions.h"
-#include <iostream>
 #include <string>
 
 Directions::Directions()
