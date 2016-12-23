@@ -99,6 +99,8 @@ void Board::move(Index stone, Directions direction)
 
 std::list<Board> Board::get_moves() const
 {
+  if (deadstone())
+    return std::list<Board>();
   std::list<Board> boardlist;
   Directions direction = Directions();
   while (direction.next())
@@ -112,7 +114,8 @@ std::list<Board> Board::get_moves() const
         break;
       Board moved(*this);
       moved.move(pushable_stone, direction);
-      boardlist.push_back(moved);
+      // if (!moved.deadstone())
+        boardlist.push_back(moved);
     }
   }
   return boardlist;
@@ -167,17 +170,13 @@ void Board::read(BoardString const& inputstring)
 
 bool Board::sane() const
 {
-  if(sanestring() == "")
-    return true;
-  return false;
+  return sanestring() == "";
 }
 
 bool Board::sane(std::string& errorstring) const
 {
-  errorstring = sanestring();
-  if(errorstring == "")
-    return true;
-  return false;
+  errorstring += sanestring();
+  return errorstring == "";
 }
 
 std::string Board::sanestring() const
@@ -193,27 +192,27 @@ std::string Board::sanestring() const
     errorstring.append("error: Surrounding walls are missing! (should never occur)\n");
   if (((m_stones & m_walls) != empty) && ((m_targets & m_walls) != empty) && ((m_reachables & m_walls) != empty))
     errorstring.append("error: Another object is inside a wall! (should never occur)\n");
-  BitBoard const deadstones(deadstone());
-  if (deadstones)
+  if (deadstone())
     errorstring.append("error: Some stones in input can never be moved!\n");
-  if ((m_reachables.flowthrough(~(m_walls | deadstones)).spread(Directions(1, 1, 1, 1)) & (m_stones | m_targets)) != (m_stones | m_targets))
+  if ((m_reachables.flowthrough(~m_walls).spread(Directions(1, 1, 1, 1)) & (m_stones | m_targets)) != (m_stones | m_targets))
     errorstring.append("error: Some stones or targets in input can never be reached!\n");
   return errorstring;
 }
 
 BitBoard Board::deadstone() const
 {
-  BitBoard deadstones;
-  BitBoard obstructed = m_walls | m_stones;
-  while (deadstones = m_stones & obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1)))
-    obstructed ^= m_stones & ~deadstones;
-  return deadstones;
 #if 0
-  return m_stones & m_walls.spread(Directions(1, 0, 1, 0)) & m_walls.spread(Directions(0, 1, 0, 1)); //a simpler check that doesn't take stones into acoount
+  BitBoard obstructed = m_walls | m_stones;
+  BitBoard deadstones = m_stones & obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
+  while (obstructed != (obstructed & (~m_stones | deadstones)))
+  {
+    obstructed &= ~m_stones | deadstones;
+    deadstones &= obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
+  }
+  return deadstones & ~m_targets;
 #endif
+  return m_stones & m_walls.spread(Directions(1, 0, 1, 0)) & m_walls.spread(Directions(0, 1, 0, 1)) & ~m_targets; //a simpler check that doesn't take stones into acoount
 }
-
-BitBoard Board::getreachables() const {return m_reachables;}
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {

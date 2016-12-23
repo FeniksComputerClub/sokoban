@@ -86,7 +86,7 @@ class BitBoard : public cwchess::BitBoard {
     BitBoard flowthrough(BitBoard const& space) const
     {
       BitBoard input(*this);
-      BitBoard previous(empty);
+      BitBoard previous;
       do
       {
         previous = input;

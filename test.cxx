@@ -90,7 +90,7 @@ int main(){
     all_parents_type all_parents;
 
     // Start with just the initial problem setup.
-    all_boards.emplace(setup_h, 0);
+    all_boards.emplace(setup_f, 0);
 
     // Store new boards that we didn't see before in new_boards.
     std::vector<all_boards_type::iterator> new_boards;
@@ -104,21 +104,20 @@ int main(){
       next_boards_type next_boards;
       for (next_boards_type::value_type new_board : new_boards)
       {
-        //std::cout << "New board (at move " << new_board->second << "):\n" << new_board->first << std::endl;
+        // std::cout << "New board (at move " << new_board->second << "):\n" << new_board->first << std::endl;
         for (Board move : new_board->first.get_moves())
         {
-          //std::cout << "Move:\n" << move << std::endl;
-
+          // std::cout << "Move:\n" << move << std::endl;
           auto result = all_boards.insert(all_boards_type::value_type(move, count));
           if (result.second)
-	  {
+          {
             next_boards.push_back(result.first);
-	    all_parents.insert(all_parents_type::value_type(move, new_board));
-	    if (move.solved())
-	    {
-	      std::cout << "Solved in " << count << " moves:\n" << move << std::endl;
-	    }
-	  }
+            all_parents.insert(all_parents_type::value_type(move, new_board));
+            if (move.solved())
+            {
+              std::cout << "Solved in " << count << " moves:\n" << move << std::endl;
+            }
+          }
         }
       }
       new_boards = next_boards;

@@ -28,7 +28,7 @@ class Board {
     bool sane(std::string& errorstring) const;
     BitBoard deadstone() const;
 
-    BitBoard getreachables() const;
+    BitBoard getreachables() const { return m_reachables; };
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);

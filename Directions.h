@@ -1,14 +1,15 @@
 #pragma once
 
 #include <string>
+#include <iosfwd>
 
 class Directions {
   private:
-    static int const right_pos = 1;
-    static int const down_pos = 2;
-    static int const left_pos = 4;
-    static int const up_pos = 8;
-    static int const max_pos = right_pos | down_pos | left_pos | up_pos;
+    // static int const right_pos = 1;
+    // static int const down_pos = 2;
+    // static int const left_pos = 4;
+    // static int const up_pos = 8;
+    // static int const max_pos = right_pos | down_pos | left_pos | up_pos;
 
     bool m_right;
     bool m_down;
@@ -40,8 +41,8 @@ class Directions {
     friend Directions operator~(Directions const& input) { Directions output(input); output.reverse(); return output; }
     
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
-    friend bool operator<(Directions const& lh, Directions const& rh) { return lh.get() < rh.get(); }
+    friend bool operator<(Directions const& input1, Directions const& input2) { return input1.right() != input2.right() ? input1.right() < input2.right() : input1.down() != input2.down() ? input1.down() < input2.down() : input1.left() != input2.left() ? input1.left() < input2.left() : input1.up() < input2.up(); };
 
-  private:
-    int get() const;
+  // private:
+    // int get() const;
 };

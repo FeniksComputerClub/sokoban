@@ -27,7 +27,7 @@ void Directions::set(bool right, bool down, bool left, bool up)
   m_left = left;
   m_up = up;
 }
-
+#if 0
 int Directions::get() const
 {
   int output = 0;
@@ -41,7 +41,7 @@ int Directions::get() const
     output &= up_pos;
   return output;
 }
-
+#endif
 void Directions::reverse()
 {
   std::swap(m_right, m_left);
