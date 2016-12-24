@@ -99,8 +99,6 @@ void Board::move(Index stone, Directions direction)
 
 std::list<Board> Board::get_moves() const
 {
-  if (deadstone())
-    return std::list<Board>();
   std::list<Board> boardlist;
   Directions direction = Directions();
   while (direction.next())
