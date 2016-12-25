@@ -72,13 +72,13 @@ class BitBoard : public cwchess::BitBoard {
     {
       BitBoard const original(*this);
       BitBoard result(empty);
-      if (direction.right())
+      if (direction.test(direction.right))
         result |= original << 1;
-      if (direction.down())
+      if (direction.test(direction.down))
         result |= original << 8;
-      if (direction.left())
+      if (direction.test(direction.left))
         result |= original >> 1;
-      if (direction.up())
+      if (direction.test(direction.up))
         result |= original >> 8;
       return result;
     }

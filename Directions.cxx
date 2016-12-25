@@ -8,26 +8,39 @@ Directions::Directions()
   reset();
 }
 
-Directions::Directions(bool right, bool down, bool left, bool up)
+Directions::Directions(DirectionsData data)
 {
-  set(right, down, left, up);
+  set(data);
+}
+
+Directions::Directions(bool set_right, bool set_down, bool set_left, bool set_up)
+{
+  set(set_right, set_down, set_left, set_up);
 }
 
 void Directions::reset()
 {
-  m_right = false;
-  m_down = false;
-  m_left = false;
-  m_up = false;
+  m_data = none;
 }
 
-void Directions::set(bool right, bool down, bool left, bool up)
+void Directions::set(DirectionsData data)
 {
-  m_right = right;
-  m_down = down;
-  m_left = left;
-  m_up = up;
+  m_data = data & all;
 }
+
+void Directions::set(bool set_right, bool set_down, bool set_left, bool set_up)
+{
+  reset();
+  if (set_right)
+    m_data |= right;
+  if (set_down)
+    m_data |= down;
+  if (set_left)
+    m_data |= left;
+  if (set_up)
+    m_data |= up;
+}
+
 #if 0
 int Directions::get() const
 {
@@ -43,42 +56,33 @@ int Directions::get() const
   return output;
 }
 #endif
+
 void Directions::reverse()
 {
-  std::swap(m_right, m_left);
-  std::swap(m_down, m_up);
+  m_data = ((m_data >> 2) | (m_data << 2)) & all;
 }
 
 bool Directions::next()
 {
-  if(!(m_right | m_down | m_left | m_up))
-    set(1, 0, 0, 0);
-  else if (m_right && !m_down)
-    std::swap(m_right, m_down);
-  else if (m_down && !m_left)
-    std::swap(m_down, m_left);
-  else if (m_left && !m_up)
-    std::swap(m_left, m_up);
-  else if (m_up && !m_right)
+  m_data <<= 1;
+  if (m_data & !all)
   {
-    std::swap(m_up, m_right);
+    m_data = (m_data | right) & all;
     return false;
   }
-  else
-    return false;
   return true;
 }
 
 std::string Directions::name() const
 {
   std::string names;
-  if (m_right)
+  if (m_data & right)
     names.append(" and right");
-  if (m_down)
+  if (m_data & down)
     names.append(" and down");
-  if (m_left)
+  if (m_data & left)
     names.append(" and left");
-  if (m_up)
+  if (m_data & up)
     names.append(" and up");
   if (names.length())
     names = names.substr(5);
