@@ -33,9 +33,9 @@ class Directions {
     DirectionsData get() const { return m_data; }
     std::string name() const;
 
-    Directions& operator|=(Directions const& input) { set(get() | input.get()); return *this; }
-    Directions& operator&=(Directions const& input) { set(get() & input.get()); return *this; }
-    Directions& operator^=(Directions const& input) { set(get() ^ input.get()); return *this; }
+    Directions& operator|=(Directions const& input) { set(m_data | input.get()); return *this; }
+    Directions& operator&=(Directions const& input) { set(m_data & input.get()); return *this; }
+    Directions& operator^=(Directions const& input) { set(m_data ^ input.get()); return *this; }
 
     friend Directions operator|(Directions const& input1, Directions const& input2) { return Directions(input1.get() | input2.get()); }
     friend Directions operator&(Directions const& input1, Directions const& input2) { return Directions(input1.get() & input2.get()); }
