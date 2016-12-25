@@ -222,11 +222,10 @@ std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 
 std::istream& operator>>(std::istream& inputstream, Board& board)
 {
-  BoardString inputstring;
   char getchars[65];
   inputstream.get(getchars, 65);
 
-  inputstring.assign(getchars);
+  BoardString inputstring(getchars);
   board.read(inputstring);
   return inputstream;
 }
