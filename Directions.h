@@ -25,10 +25,10 @@ class Directions {
     void reverse();
     bool next();
 
-    bool right() const { return m_right; }; 
-    bool down() const { return m_down; };
-    bool left() const { return m_left; };
-    bool up() const { return m_up; };
+    bool right() const { return m_right; }
+    bool down() const { return m_down; }
+    bool left() const { return m_left; }
+    bool up() const { return m_up; }
     std::string name() const;
     
     Directions& operator|=(Directions const& input) { set(input.right() | right(), input.down() | down(), input.left() | left(), input.up() | up()); return *this; }
@@ -41,7 +41,7 @@ class Directions {
     friend Directions operator~(Directions const& input) { Directions output(input); output.reverse(); return output; }
     
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
-    friend bool operator<(Directions const& input1, Directions const& input2) { return input1.right() != input2.right() ? input1.right() < input2.right() : input1.down() != input2.down() ? input1.down() < input2.down() : input1.left() != input2.left() ? input1.left() < input2.left() : input1.up() < input2.up(); };
+    friend bool operator<(Directions const& input1, Directions const& input2) { return input1.right() != input2.right() ? input1.right() < input2.right() : input1.down() != input2.down() ? input1.down() < input2.down() : input1.left() != input2.left() ? input1.left() < input2.left() : input1.up() < input2.up(); }
 
   // private:
     // int get() const;
