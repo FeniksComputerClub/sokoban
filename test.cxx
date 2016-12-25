@@ -104,7 +104,7 @@ int main(){
       next_boards_type next_boards;
       for (next_boards_type::value_type new_board : new_boards)
       {
-        if (new_board->deadstone())
+        if (new_board->first.deadstone())
           continue;
         for (Board move : new_board->first.get_moves())
         {
