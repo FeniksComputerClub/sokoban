@@ -85,14 +85,14 @@ class BitBoard : public cwchess::BitBoard {
 
     BitBoard flowthrough(BitBoard const& space) const
     {
-      BitBoard input(*this);
-      BitBoard previous;
+      BitBoard reachable1(*this);
+      BitBoard reachable2;
       do
       {
-        previous = input;
-        input |= input.spread(Directions(1, 1, 1, 1)) & space;
+        reachable2 = reachable1.spread(Directions(1, 1, 1, 1)) & space;
+        reachable1 = reachable2.spread(Directions(1, 1, 1, 1)) & space;
       }
-      while(input != previous);
-      return input;
+      while(reachable1 != reachable2);
+      return reachable1;
     }
 };

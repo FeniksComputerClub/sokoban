@@ -104,10 +104,10 @@ int main(){
       next_boards_type next_boards;
       for (next_boards_type::value_type new_board : new_boards)
       {
-        // std::cout << "New board (at move " << new_board->second << "):\n" << new_board->first << std::endl;
+        if (new_board->deadstone())
+          continue;
         for (Board move : new_board->first.get_moves())
         {
-          // std::cout << "Move:\n" << move << std::endl;
           auto result = all_boards.insert(all_boards_type::value_type(move, count));
           if (result.second)
           {
