@@ -112,8 +112,7 @@ std::list<Board> Board::get_moves() const
         break;
       Board moved(*this);
       moved.move(pushable_stone, direction);
-      // if (!moved.deadstone())
-        boardlist.push_back(moved);
+      boardlist.push_back(moved);
     }
   }
   return boardlist;

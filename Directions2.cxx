@@ -13,9 +13,9 @@ Directions::Directions(DirectionsData data)
   set(data);
 }
 
-Directions::Directions(bool right, bool down, bool left, bool up)
+Directions::Directions(bool set_right, bool set_down, bool set_left, bool set_up)
 {
-  set(right, down, left, up);
+  set(set_right, set_down, set_left, set_up);
 }
 
 void Directions::reset()
@@ -28,19 +28,20 @@ void Directions::set(DirectionsData data)
   m_data = data & all;
 }
 
-void Directions::set(bool right, bool down, bool left, bool up)
+void Directions::set(bool set_right, bool set_down, bool set_left, bool set_up)
 {
   reset();
-  if (right)
+  if (set_right)
     m_data |= right;
-  if (down)
+  if (set_down)
     m_data |= down;
-  if (left)
+  if (set_left)
     m_data |= left;
-  if (up)
+  if (set_up)
     m_data |= up;
 }
 
+#if 0
 int Directions::get() const
 {
   int output = 0;
@@ -54,6 +55,7 @@ int Directions::get() const
     output &= up_pos;
   return output;
 }
+#endif
 
 void Directions::reverse()
 {
