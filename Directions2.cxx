@@ -59,18 +59,21 @@ int Directions::get() const
 
 void Directions::reverse()
 {
-  m_data = (m_data >> 2) | (m_data << 2) & all;
+  m_data = ((m_data >> 2) | (m_data << 2)) & all;
 }
 
 bool Directions::next()
 {
-  m_data >>= 1;
-  if (m_data & !all)
+  if (m_data)
+    m_data <<= 1;
+  else
+    m_data = right;
+  if (m_data & ~all)
   {
     m_data = (m_data | right) & all;
-    return true;
+    return false;
   }
-  return false;
+  return true;
 }
 
 std::string Directions::name() const

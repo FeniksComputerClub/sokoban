@@ -22,15 +22,16 @@ class Directions {
 
     Directions();
     Directions(DirectionsData data);
-    Directions(bool right, bool down, bool left, bool up);
+    Directions(bool set_right, bool set_down, bool set_left, bool set_up);
 
     void set(DirectionsData data);
-    void set(bool right, bool down, bool left, bool up);
+    void set(bool set_right, bool set_down, bool set_left, bool set_up);
     void reset();
     void reverse();
     bool next();
 
-    DirectionsData get() const { return m_data; }
+    DirectionsData get() const { return m_data; } // make this private
+    DirectionsData test(DirectionsData data) const { return m_data & data; }
     std::string name() const;
 
     Directions& operator|=(Directions const& input) { set(m_data | input.get()); return *this; }
