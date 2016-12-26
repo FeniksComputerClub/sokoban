@@ -64,8 +64,11 @@ void Directions::reverse()
 
 bool Directions::next()
 {
-  m_data <<= 1;
-  if (m_data & !all)
+  if (m_data)
+    m_data <<= 1;
+  else
+    m_data = right;
+  if (m_data & ~all)
   {
     m_data = (m_data | right) & all;
     return false;
