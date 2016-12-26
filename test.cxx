@@ -104,6 +104,8 @@ int main(){
       next_boards_type next_boards;
       for (next_boards_type::value_type new_board : new_boards)
       {
+        if (new_board->first.solved())
+          std::cout << "Solved in " << new_board->second << " moves:\n" << new_board->first << std::endl;
         if (new_board->first.deadstone())
           continue;
         for (Board move : new_board->first.get_moves())
@@ -113,10 +115,6 @@ int main(){
           {
             next_boards.push_back(result.first);
             all_parents.insert(all_parents_type::value_type(move, new_board));
-            if (move.solved())
-            {
-              std::cout << "Solved in " << count << " moves:\n" << move << std::endl;
-            }
           }
         }
       }

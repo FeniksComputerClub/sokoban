@@ -191,7 +191,7 @@ std::string Board::sanestring() const
     errorstring.append("error: Another object is inside a wall! (should never occur)\n");
   if (deadstone())
     errorstring.append("error: Some stones in input can never be moved!\n");
-  if ((m_reachables.flowthrough(~m_walls).spread(Directions(1, 1, 1, 1)) & (m_stones | m_targets)) != (m_stones | m_targets))
+  if ((m_reachables.flowthrough(~m_walls).spread(Directions(1, 1, 1, 1)) & (m_stones ^ m_targets)) != (m_stones ^ m_targets))
     errorstring.append("error: Some stones or targets in input can never be reached!\n");
   return errorstring;
 }
