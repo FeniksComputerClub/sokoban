@@ -41,11 +41,8 @@ std::string Board::write(BitBoard const& colors, bool showreachables) const
     if (iscolorset)
       outputstring += marker_color;
 
-    if (m_walls.test(i))
-      outputstring += '#';
-    else if (m_stones.test(i))
-      outputstring += m_targets.test(i) ? '*' : '$';
-    else if (m_reachables.test(i))
+    bool playerset = false;
+    if (m_reachables.test(i))
     {
       if (showreachables && !iscolorset)
       {
@@ -55,15 +52,20 @@ std::string Board::write(BitBoard const& colors, bool showreachables) const
       if (!isplayerset)
       {
         outputstring += m_targets.test(i) ? '+' : '@';
-        isplayerset = true;
+        isplayerset = playerset = true;
       }
-      else
-        outputstring += ' ';
     }
-    else if (m_targets.test(i))
-      outputstring += '.';
-    else
-      outputstring += ' ';
+    if (!playerset)
+    {
+      if (m_walls.test(i))
+	outputstring += '#';
+      else if (m_stones.test(i))
+	outputstring += m_targets.test(i) ? '*' : '$';
+      else if (m_targets.test(i))
+	outputstring += '.';
+      else
+	outputstring += ' ';
+    }
 
     if (iscolorset)
       outputstring += reset_color;

@@ -3,9 +3,9 @@
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
-#include <set>
 #include <vector>
 #include <map>
+#include <list>
 
 int main(){
   std::string setup_a = //test setup for error throwing but does not throw errors, not loadable
@@ -89,17 +89,26 @@ int main(){
     "#     ##"
     "########"
     "########";
+  std::string setup_j = //setup from sokoban app, solvable in 24 moves
+    "########"
+    "#####  #"
+    "#####  #"
+    "###  $ #"
+    "###.$ .#"
+    "####.$ #"
+    "####@ ##"
+    "########";
 
   try {
     // Store all possible boards in all_boards.
     typedef std::map<Board, int> all_boards_type;
     all_boards_type all_boards;
     // Store iterators to the parent of all boards.
-    typedef std::map<Board, all_boards_type::iterator> all_parents_type;
-    all_parents_type all_parents;
+    typedef std::map<Board, all_boards_type::iterator> all_children_type;
+    all_children_type all_children;
 
     // Start with just the initial problem setup.
-    all_boards.emplace(setup_i, 0);
+    all_boards.emplace(setup_j, 0);
 
     // Store new boards that we didn't see before in new_boards.
     std::vector<all_boards_type::iterator> new_boards;
@@ -114,7 +123,7 @@ int main(){
       for (next_boards_type::value_type new_board : new_boards)
       {
         if (new_board->first.solved())
-          std::cout << "Solved in " << new_board->second << " moves:\n" << new_board->first << std::endl;
+          std::cout << "Solved in " << new_board->second << " moves" << std::endl;
         if (new_board->first.deadstone())
           continue;
         for (Board move : new_board->first.get_moves())
@@ -123,7 +132,7 @@ int main(){
           if (result.second)
           {
             next_boards.push_back(result.first);
-            all_parents.insert(all_parents_type::value_type(move, new_board));
+            all_children.insert(all_children_type::value_type(move, new_board));
           }
         }
       }
@@ -131,6 +140,28 @@ int main(){
       ++count;
     }
     while(!new_boards.empty());
+
+    all_children_type::iterator child = all_children.begin();
+    while(child != all_children.end())
+    {
+      if (child->first.solved())
+	break;
+      ++child;
+    }
+
+    std::list<Board> solution;
+    while(child != all_children.end())
+    {
+      solution.push_front(child->first);
+      all_boards_type::iterator parent = child->second;
+      child = all_children.find(parent->first);
+    }
+
+    count = 0;
+    for (Board board : solution)
+    {
+      std::cout << ++count << ":\n" << board.write(empty, false) << std::endl;
+    }
   }
   catch(std::runtime_error const& error) {
     std::cout << "runtime error: " << error.what() << std::endl;
