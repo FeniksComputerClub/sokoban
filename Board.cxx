@@ -191,7 +191,7 @@ std::string Board::sanestring() const
     errorstring.append("error: Another object is inside a wall! (should never occur)\n");
   if (deadstone())
     errorstring.append("error: Some stones in input can never be moved!\n");
-  if ((m_reachables.flowthrough(~m_walls).spread(Directions(1, 1, 1, 1)) & (m_stones ^ m_targets)) != (m_stones ^ m_targets))
+  if ((m_reachables.flowthrough(~m_walls).spread(Directions::all) & (m_stones ^ m_targets)) != (m_stones ^ m_targets))
     errorstring.append("error: Some stones or targets in input can never be reached!\n");
   return errorstring;
 }
@@ -200,15 +200,15 @@ BitBoard Board::deadstone() const
 {
 #if 0
   BitBoard obstructed = m_walls | m_stones;
-  BitBoard deadstones = m_stones & obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
+  BitBoard deadstones = m_stones & obstructed.spread(Directions::horizontal) & obstructed.spread(Directions::vertical));
   while (obstructed != (obstructed & (~m_stones | deadstones)))
   {
     obstructed &= ~m_stones | deadstones;
-    deadstones &= obstructed.spread(Directions(1, 0, 1, 0)) & obstructed.spread(Directions(0, 1, 0, 1));
+    deadstones &= obstructed.spread(Directions::horizontal) & obstructed.spread(Directions::vertical);
   }
   return deadstones & ~m_targets;
 #endif
-  return m_stones & m_walls.spread(Directions(1, 0, 1, 0)) & m_walls.spread(Directions(0, 1, 0, 1)) & ~m_targets; //a simpler check that doesn't take stones into acoount
+  return m_stones & m_walls.spread(Directions::horizontal) & m_walls.spread(Directions::vertical) & ~m_targets; //a simpler check that doesn't take stones into acoount
 }
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)

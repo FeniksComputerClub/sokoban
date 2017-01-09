@@ -72,13 +72,13 @@ class BitBoard : public cwchess::BitBoard {
     {
       BitBoard const original(*this);
       BitBoard result(empty);
-      if (direction.test(direction.right))
+      if ((direction & Directions::right))
         result |= original << 1;
-      if (direction.test(direction.down))
+      if ((direction & Directions::down))
         result |= original << 8;
-      if (direction.test(direction.left))
+      if ((direction & Directions::left))
         result |= original >> 1;
-      if (direction.test(direction.up))
+      if ((direction & Directions::up))
         result |= original >> 8;
       return result;
     }
@@ -90,7 +90,7 @@ class BitBoard : public cwchess::BitBoard {
       do
       {
         previous = reachable;
-        reachable |= reachable.spread(Directions(1, 1, 1, 1)) & space;
+        reachable |= reachable.spread(Directions::all) & space;
       }
       while(reachable != previous);
       return reachable;
