@@ -24,7 +24,7 @@ class Directions {
 
     void set(DirectionsData data);
     void reset();
-    void reverse();
+    Directions reverse();
     bool next();
 
     std::string name() const;

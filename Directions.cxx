@@ -23,9 +23,9 @@ void Directions::set(DirectionsData data)
   m_data = data & all;
 }
 
-void Directions::reverse()
+Directions Directions::reverse()
 {
-  m_data = ((m_data >> 2) | (m_data << 2)) & all;
+  return ((m_data >> 2) | (m_data << 2)) & all;
 }
 
 bool Directions::next()
