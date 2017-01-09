@@ -108,7 +108,7 @@ int main(){
     all_children_type all_children;
 
     // Start with just the initial problem setup.
-    all_boards.emplace(setup_j, 0);
+    all_boards.emplace(setup_i, 0);
 
     // Store new boards that we didn't see before in new_boards.
     std::vector<all_boards_type::iterator> new_boards;
@@ -122,8 +122,10 @@ int main(){
       next_boards_type next_boards;
       for (next_boards_type::value_type new_board : new_boards)
       {
+        #if(0)
         if (new_board->first.solved())
           std::cout << "Solved in " << new_board->second << " moves" << std::endl;
+        #endif
         if (new_board->first.deadstone())
           continue;
         for (Board move : new_board->first.get_moves())
@@ -141,14 +143,16 @@ int main(){
     }
     while(!new_boards.empty());
 
+    // find the solved board
     all_children_type::iterator child = all_children.begin();
     while(child != all_children.end())
     {
       if (child->first.solved())
-	break;
+        break;
       ++child;
     }
 
+    // find the parents of the solution by matching their children and put them in list solution
     std::list<Board> solution;
     while(child != all_children.end())
     {
@@ -157,11 +161,14 @@ int main(){
       child = all_children.find(parent->first);
     }
 
+    // print boards from setup to solution
     count = 0;
     for (Board board : solution)
     {
       std::cout << ++count << ":\n" << board.write(empty, false) << std::endl;
     }
+    if (count)
+      std::cout << "Solved in " << count << " moves" << std::endl;
   }
   catch(std::runtime_error const& error) {
     std::cout << "runtime error: " << error.what() << std::endl;

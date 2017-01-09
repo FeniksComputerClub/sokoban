@@ -58,13 +58,13 @@ std::string Board::write(BitBoard const& colors, bool showreachables) const
     if (!playerset)
     {
       if (m_walls.test(i))
-	outputstring += '#';
+        outputstring += '#';
       else if (m_stones.test(i))
-	outputstring += m_targets.test(i) ? '*' : '$';
+        outputstring += m_targets.test(i) ? '*' : '$';
       else if (m_targets.test(i))
-	outputstring += '.';
+        outputstring += '.';
       else
-	outputstring += ' ';
+        outputstring += ' ';
     }
 
     if (iscolorset)

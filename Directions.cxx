@@ -23,7 +23,7 @@ void Directions::set(DirectionsData data)
   m_data = data & all;
 }
 
-Directions Directions::reverse()
+Directions Directions::reverse() const
 {
   return ((m_data >> 2) | (m_data << 2)) & all;
 }

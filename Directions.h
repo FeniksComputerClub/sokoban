@@ -24,9 +24,9 @@ class Directions {
 
     void set(DirectionsData data);
     void reset();
-    Directions reverse();
     bool next();
 
+    Directions reverse() const;
     std::string name() const;
 
     Directions& operator|=(Directions const& input) { m_data |= input.m_data; return *this; }
