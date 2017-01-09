@@ -149,9 +149,12 @@ int main(){
     }
 
     count = 0;
-    for (Board board : solution)
+    BitBoard player(empty);
+    for (auto board = solution.begin(); board != solution.end();)
     {
-      std::cout << ++count << ":\n" << board.write(empty, false) << std::endl;
+      std::cout << ++count << ":\n" << board->write(false, empty, player) << std::endl;
+      auto parent = board++;
+      player = parent->getstones() & ~board->getstones();
     }
   }
   catch(std::runtime_error const& error) {

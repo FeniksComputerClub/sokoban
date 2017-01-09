@@ -19,7 +19,7 @@ class Board {
     Board();
     Board(BoardString const&);
 
-    std::string write(BitBoard const& colors = BitBoard(0), bool showreachables = true) const;
+    std::string write(bool showreachables = false, BitBoard const& colors = BitBoard(0), BitBoard const& player = BitBoard(0)) const;
     BitBoard pushable(Directions direction) const;
     std::list<Board> get_moves() const;
     bool solved() const;
@@ -29,6 +29,7 @@ class Board {
     BitBoard deadstone() const;
 
     BitBoard getreachables() const { return m_reachables; }
+    BitBoard getstones() const { return m_stones; }
 
     friend std::ostream& operator<<(std::ostream& os, Board const& board);
     friend std::istream& operator>>(std::istream& is, Board& board);

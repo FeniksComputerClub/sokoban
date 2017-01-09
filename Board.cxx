@@ -24,14 +24,14 @@ void Board::reset()
   m_reachables = empty;
 }
 
-std::string Board::write(BitBoard const& colors, bool showreachables) const
+std::string Board::write(bool showreachables, BitBoard const& colors, BitBoard const& player) const
 {
   static char const* const reset_color = "\e[0m";
   static char const* const marker_color = "\e[104m";
   static char const* const reachable_color = "\e[102m";
 
   std::string outputstring;
-  bool isplayerset = false;
+  bool isplayerset = player;
   for (Index i = index_begin; i < index_end; ++i)
   {
     if (i > index_begin && i() % 8 == 0)
@@ -49,7 +49,7 @@ std::string Board::write(BitBoard const& colors, bool showreachables) const
         outputstring += reachable_color;
         iscolorset = true;
       }
-      if (!isplayerset)
+      if (!isplayerset || player.test(i))
       {
         outputstring += m_targets.test(i) ? '+' : '@';
         isplayerset = playerset = true;
@@ -215,7 +215,8 @@ BitBoard Board::deadstone() const
 
 std::ostream& operator<<(std::ostream& outputstream, Board const& board)
 {
-  outputstream << board.write();
+  // By default, show reachables.
+  outputstream << board.write(true);
   return outputstream;
 }
 
