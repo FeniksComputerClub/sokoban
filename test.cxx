@@ -80,6 +80,15 @@ int main(){
     "########"
     "########"
     "########";
+  std::string setup_i = //test setup for testing if multiple solutions are calculated, solvable in 4 moves
+    "########"
+    "#     ##"
+    "#     ##"
+    "# .#$@##"
+    "#     ##"
+    "#     ##"
+    "########"
+    "########";
 
   try {
     // Store all possible boards in all_boards.
@@ -90,7 +99,7 @@ int main(){
     all_parents_type all_parents;
 
     // Start with just the initial problem setup.
-    all_boards.emplace(setup_f, 0);
+    all_boards.emplace(setup_i, 0);
 
     // Store new boards that we didn't see before in new_boards.
     std::vector<all_boards_type::iterator> new_boards;
