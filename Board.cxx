@@ -79,7 +79,7 @@ void Board::reachable(BitBoard const& start)
 BitBoard Board::pushable(Directions direction) const
 {
   BitBoard const not_obstructed = ~(m_walls | m_stones);
-  return m_reachables.spread(direction) & m_stones & not_obstructed.spread(~direction);
+  return m_reachables.spread(direction) & m_stones & not_obstructed.spread(direction.reverse());
 }
 
 void Board::move(Index stone, Directions direction)
