@@ -39,9 +39,9 @@ class Directions {
     friend Directions operator&(Directions const& input1, Directions const& input2) { return input1.m_data & input2.m_data; }
     friend Directions operator^(Directions const& input1, Directions const& input2) { return input1.m_data ^ input2.m_data; }
 
-    friend Directions operator|(Directions const& input1, DirectionsData const& input2) { return input1.m_data | input2; }
-    friend Directions operator&(Directions const& input1, DirectionsData const& input2) { return input1.m_data & input2; }
-    friend Directions operator^(Directions const& input1, DirectionsData const& input2) { return input1.m_data ^ input2; }
+    friend Directions operator|(Directions const& input1, DirectionsData input2) { return input1.m_data | input2; }
+    friend Directions operator&(Directions const& input1, DirectionsData input2) { return input1.m_data & input2; }
+    friend Directions operator^(Directions const& input1, DirectionsData input2) { return input1.m_data ^ input2; }
 
     friend bool operator<(Directions const& input1, Directions const& input2) { return input1.m_data < input2.m_data; }
     friend std::ostream& operator<<(std::ostream& outputstream, Directions const& input);
